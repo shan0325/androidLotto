@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingRight="20dp"
-            android:text="이번주 회차" />
+            android:text="회차" />
 
         <EditText
             android:id="@+id/round"
@@ -114,13 +114,18 @@
             android:text="940" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/disLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/disLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/saveBtnLayout"

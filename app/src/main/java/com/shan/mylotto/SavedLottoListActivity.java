@@ -2,6 +2,8 @@ package com.shan.mylotto;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -10,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -29,7 +33,7 @@ import static com.shan.mylotto.R.id.round;
 public class SavedLottoListActivity extends AppCompatActivity {
 
     private LottoGameService lottoGameService;
-    private LinearLayout listLayout;
+    private TableLayout listTableLayout;
     private Toolbar myToolbar;
 
     @Override
@@ -43,7 +47,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
     @SuppressLint("WrongViewCast")
     public void init() {
         this.lottoGameService = new LottoGameServiceImpl(new LottoServiceImpl());
-        this.listLayout = findViewById(R.id.listLayout);
+        this.listTableLayout = findViewById(R.id.listTableLayout);
         this.myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼
@@ -65,53 +69,52 @@ public class SavedLottoListActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("11111111111111");
                 displaySavedLottoList(rounds.get(position));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                System.out.println("2222222222222");
             }
         });
     }
 
     @SuppressLint("WrongViewCast")
     private void displaySavedLottoList(Integer round) {
-        System.out.println(round);
-        listLayout.removeAllViews();
+        listTableLayout.removeAllViews();
+
+        TableRow headTr = new TableRow(this);
+        headTr.setBackgroundResource(R.drawable.border);
+        headTr.setPadding(0,10,0,10);
+        makeTableRow(headTr, "아이디");
+        makeTableRow(headTr, "번호");
+        makeTableRow(headTr, "생성일자");
+        listTableLayout.addView(headTr);
+
         List<LottoGame> list = lottoGameService.findByRound(getBaseContext(), round);
-        System.out.println(list);
-
-
-
         for(int i = 0; i < list.size(); i++) {
             LottoGame lottoGame = list.get(i);
-            System.out.println(lottoGame);
-            Integer id = lottoGame.getId();
-
             List<Lotto> lottos = lottoGame.getLottos();
+
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
                 List<Integer> numbers = lotto.getNumbers();
-                System.out.println(numbers.toString());
 
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                LinearLayout row = new LinearLayout(this);
-                row.setOrientation(LinearLayout.HORIZONTAL);
-                row.setGravity(Gravity.CENTER_HORIZONTAL);
-
-                TextView lottoGameId = new TextView(this);
-                lottoGameId.setText(String.valueOf(id));
-                row.addView(lottoGameId);
-
-                TextView lottoNumbers = new TextView(this);
-                lottoNumbers.setText(numbers.toString());
-                row.addView(lottoNumbers);
-
-                listLayout.addView(row);
+                TableRow bodyTr = new TableRow(this);
+                bodyTr.setBackgroundResource(R.drawable.border);
+                bodyTr.setPadding(0,10,0,10);
+                makeTableRow(bodyTr, String.valueOf(lottoGame.getId()));
+                makeTableRow(bodyTr, numbers.toString());
+                makeTableRow(bodyTr, lotto.getMakeDate());
+                listTableLayout.addView(bodyTr);
             }
         }
+    }
+
+    public void makeTableRow(TableRow tr, String text) {
+        TextView tv = new TextView(this);
+        tv.setGravity(Gravity.CENTER);
+        tv.setText(text);
+        tr.addView(tv);
     }
 
     @Override
