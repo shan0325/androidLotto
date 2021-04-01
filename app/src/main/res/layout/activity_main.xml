@@ -12,7 +12,7 @@
         android:id="@+id/myToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/toolbarBackground"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -31,52 +31,74 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPink"
-        android:orientation="horizontal"
-        android:weightSum="6">
-
-        <TextView
-            android:id="@+id/textView11"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        >
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="생성 갯수"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+            <Button
+                android:id="@+id/makeOne"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/make_button"
+                android:text="1"
+                android:textColor="@color/colorBasic"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                />
 
-        <EditText
-            android:id="@+id/makeLottosLength"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="number"
-            android:maxLength="1"
-            android:background="@drawable/rounded_edittext"
-            android:gravity="center"
-            />
+            <Button
+                android:id="@+id/makeTwo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/make_button"
+                android:text="2"
+                android:textColor="@color/colorBasic"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                />
 
-        <Button
-            android:id="@+id/makeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPink"
-            android:text="생성하기"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/makeThree"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/make_button"
+                android:text="3"
+                android:textColor="@color/colorBasic"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                />
 
+            <Button
+                android:id="@+id/makeFour"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/make_button"
+                android:text="4"
+                android:textColor="@color/colorBasic"
+                android:textSize="16sp"
+                android:layout_marginRight="10dp"
+                />
+
+            <Button
+                android:id="@+id/makeFive"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/make_button"
+                android:text="5"
+                android:textColor="@color/colorBasic"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
     </LinearLayout>
-
-    <!--<TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:text="최대 생성 갯수는 5개까지 가능합니다." />-->
 
     <TextView
         android:id="@+id/message"
@@ -84,8 +106,8 @@
         android:layout_height="30dp"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal|bottom"
-        android:text="최대 생성 갯수는 5개까지 가능합니다."
-        android:textColor="@color/colorPink"
+        android:text="최대 생성 갯수는 5개입니다."
+        android:textColor="@color/colorBasic"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -103,7 +125,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:paddingRight="20dp"
-            android:text="회차" />
+            android:text="이번주 회차" />
 
         <EditText
             android:id="@+id/round"
@@ -140,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="저장하기"
-            android:background="@color/colorButton"
+            android:background="@color/colorPrimary"
             android:textColor="#ffffff"/>
 
     </LinearLayout>

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,9 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
     private LottoGameService lottoGameService;
     private LottoGame lottoGame;
-    private EditText makeLottosLength;
     private EditText round;
-    private Button makeBtn;
+    private Button makeOne;
+    private Button makeTwo;
+    private Button makeThree;
+    private Button makeFour;
+    private Button makeFive;
     private Button saveBtn;
     private LinearLayout roundLayout;
     private LinearLayout disLayout;
@@ -57,9 +61,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void init() {
         this.lottoGameService = new LottoGameServiceImpl(new LottoServiceImpl());
-        this.makeLottosLength = findViewById(R.id.makeLottosLength);
+
         this.round = findViewById(R.id.round);
-        this.makeBtn = findViewById(R.id.makeBtn);
+        this.makeOne = findViewById(R.id.makeOne);
+        this.makeTwo = findViewById(R.id.makeTwo);
+        this.makeThree = findViewById(R.id.makeThree);
+        this.makeFour = findViewById(R.id.makeFour);
+        this.makeFive = findViewById(R.id.makeFive);
         this.saveBtn = findViewById(R.id.saveBtn);
         this.roundLayout = findViewById(R.id.roundLayout);
         this.disLayout = findViewById(R.id.disLayout);
@@ -69,16 +77,37 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(this.myToolbar);
 
         // 포커스
-        makeLottosLength.requestFocus();
+        //makeLottosLength.requestFocus();
         //키보드 보이게 하는 부분
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(makeLottosLength, 0);
+        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //imm.showSoftInput(makeLottosLength, 0);
         //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public void eventHandlerInit() {
+        Button.OnClickListener makeBtnListener = new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button btn = findViewById(v.getId());
+                String makeNumber = btn.getText().toString();
+
+                // 이전 로또 지우기
+                disLayout.removeAllViews();
+
+                lottoGame = lottoGameService.makeLottoGame(Integer.parseInt(makeNumber));
+                displayLottos(lottoGame.getLottos());
+
+                displayMessage("생성이 완료되었습니다.");
+            }
+        };
+        this.makeOne.setOnClickListener(makeBtnListener);
+        this.makeTwo.setOnClickListener(makeBtnListener);
+        this.makeThree.setOnClickListener(makeBtnListener);
+        this.makeFour.setOnClickListener(makeBtnListener);
+        this.makeFive.setOnClickListener(makeBtnListener);
+
         // 생성하기 버튼 클릭 시
-        this.makeBtn.setOnClickListener(new View.OnClickListener() {
+        /*this.makeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String lottosLenStr = makeLottosLength.getText().toString().trim();
@@ -90,14 +119,15 @@ public class MainActivity extends AppCompatActivity {
                 int lottosLen = 0;
                 try {
                     lottosLen = Integer.parseInt(lottosLenStr);
-                    if(lottosLen == 0 || lottosLen > 5) {
-                        displayMessage("생성 갯수는 0 또는 5이상 입력할 수 없습니다.");
+                    if(lottosLen == 0) return;
+                    if(lottosLen > 5) {
+                        displayMessage("5개 까지 생성할 수 있습니다.");
                         makeLottosLength.setText("");
                         return;
                     }
                 } catch(NumberFormatException e) {
                     e.printStackTrace();
-                    displayMessage("생성 갯수는 숫자만 입력할 수 있습니다.");
+                    displayMessage("숫자만 입력할 수 있습니다.");
                     makeLottosLength.setText("");
                     return;
                 }
@@ -109,9 +139,10 @@ public class MainActivity extends AppCompatActivity {
                 displayLottos(lottoGame.getLottos());
 
                 displayMessage("생성이 완료되었습니다.");
-                makeLottosLength.setText("");
+                //makeLottosLength.setText("");
             }
-        });
+        });*/
+
 
         // 저장하기 버튼 클릭 시
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayMessage(String message) {
-        this.message.setText(message);
+        //this.message.setText(message);
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 

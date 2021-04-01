@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#BA68C8</color>
+    <color name="toolbarBackground">#0c1319</color>
+    <color name="colorPrimary">#1d293a</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorPink">#F06292</color>
-    <color name="colorButton">#BA68C8</color>
+    <color name="colorBasic">#939292</color>
+
 </resources>
