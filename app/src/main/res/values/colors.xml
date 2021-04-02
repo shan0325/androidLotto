@@ -5,5 +5,11 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBasic">#939292</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorLotto_1">#FFD54F</color>
+    <color name="colorLotto_2">#64B5F6</color>
+    <color name="colorLotto_3">#F06292</color>
+    <color name="colorLotto_4">#939292</color>
+    <color name="colorLotto_5">#81C784</color>
 
 </resources>

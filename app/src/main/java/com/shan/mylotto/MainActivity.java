@@ -6,15 +6,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void eventHandlerInit() {
+        // 숫자 버튼 클릭 시
         Button.OnClickListener makeBtnListener = new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,44 +106,6 @@ public class MainActivity extends AppCompatActivity {
         this.makeThree.setOnClickListener(makeBtnListener);
         this.makeFour.setOnClickListener(makeBtnListener);
         this.makeFive.setOnClickListener(makeBtnListener);
-
-        // 생성하기 버튼 클릭 시
-        /*this.makeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String lottosLenStr = makeLottosLength.getText().toString().trim();
-                if("".equals(lottosLenStr)) {
-                    displayMessage("생성 갯수를 입력해주세요.");
-                    return;
-                }
-
-                int lottosLen = 0;
-                try {
-                    lottosLen = Integer.parseInt(lottosLenStr);
-                    if(lottosLen == 0) return;
-                    if(lottosLen > 5) {
-                        displayMessage("5개 까지 생성할 수 있습니다.");
-                        makeLottosLength.setText("");
-                        return;
-                    }
-                } catch(NumberFormatException e) {
-                    e.printStackTrace();
-                    displayMessage("숫자만 입력할 수 있습니다.");
-                    makeLottosLength.setText("");
-                    return;
-                }
-
-                // 이전 로또 지우기
-                disLayout.removeAllViews();
-
-                lottoGame = lottoGameService.makeLottoGame(lottosLen);
-                displayLottos(lottoGame.getLottos());
-
-                displayMessage("생성이 완료되었습니다.");
-                //makeLottosLength.setText("");
-            }
-        });*/
-
 
         // 저장하기 버튼 클릭 시
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -179,24 +142,38 @@ public class MainActivity extends AppCompatActivity {
                 Lotto lotto = lottos.get(i);
                 List<Integer> numbers = lotto.getNumbers();
 
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.CENTER;
+
                 LinearLayout lottoLayout = new LinearLayout(this);
-                lottoLayout.setOrientation(LinearLayout.HORIZONTAL);
-                lottoLayout.setGravity(Gravity.CENTER_HORIZONTAL);
                 lottoLayout.setLayoutParams(lp);
-                lottoLayout.setWeightSum(6);
+                lottoLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                 for(int j = 0; j < numbers.size(); j++) {
-                /*LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                buttonLp.setMargins(15, 10, 15, 10);
-                buttonLp.weight = 1;*/
+                    Integer lottoNum = numbers.get(j);
+
+                    int lottoColor = 0;
+                    if(lottoNum < 10) {
+                        lottoColor = R.drawable.lotto_1;
+                    } else if(lottoNum < 20) {
+                        lottoColor = R.drawable.lotto_2;
+                    } else if(lottoNum < 30) {
+                        lottoColor = R.drawable.lotto_3;
+                    } else if(lottoNum < 40) {
+                        lottoColor = R.drawable.lotto_4;
+                    } else {
+                        lottoColor = R.drawable.lotto_5;
+                    }
+
                     LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(120, 120);
-                    buttonLp.setMargins(20, 10, 20, 10);
+                    buttonLp.setMargins(13, 0, 13, 50);
+                    buttonLp.width = 140;
+                    buttonLp.height = 140;
 
                     Button button = new Button(this);
-                    button.setText(String.valueOf(numbers.get(j)));
                     button.setLayoutParams(buttonLp);
-                    button.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.button_shape));
+                    button.setText(String.valueOf(numbers.get(j)));
+                    button.setBackgroundDrawable(ContextCompat.getDrawable(this, lottoColor));
                     button.setTextColor(Color.WHITE);
 
                     lottoLayout.addView(button);
@@ -231,5 +208,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View focusView = getCurrentFocus();
+        if (focusView != null) {
+            Rect rect = new Rect();
+            focusView.getGlobalVisibleRect(rect);
+            int x = (int) ev.getX(), y = (int) ev.getY();
+            if (!rect.contains(x, y)) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.hideSoftInputFromWindow(focusView.getWindowToken(), 0);
+                focusView.clearFocus();
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }
