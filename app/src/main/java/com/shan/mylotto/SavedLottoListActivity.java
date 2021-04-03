@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -27,6 +28,7 @@ import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.shan.mylotto.R.id.round;
 
@@ -35,6 +37,13 @@ public class SavedLottoListActivity extends AppCompatActivity {
     private LottoGameService lottoGameService;
     private TableLayout listTableLayout;
     private Toolbar myToolbar;
+    private LinearLayout resultLayout;
+    private Button resultOneNumber;
+    private Button resultTwoNumber;
+    private Button resultThreeNumber;
+    private Button resultFourNumber;
+    private Button resultFiveNumber;
+    private Button resultBonusNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +58,13 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.lottoGameService = new LottoGameServiceImpl(new LottoServiceImpl());
         this.listTableLayout = findViewById(R.id.listTableLayout);
         this.myToolbar = findViewById(R.id.myToolbar);
+        this.resultLayout = findViewById(R.id.resultLayout);
+        this.resultOneNumber = findViewById(R.id.resultOneNumber);
+        this.resultTwoNumber = findViewById(R.id.resultTwoNumber);
+        this.resultThreeNumber = findViewById(R.id.resultThreeNumber);
+        this.resultFourNumber = findViewById(R.id.resultFourNumber);
+        this.resultFiveNumber = findViewById(R.id.resultFiveNumber);
+        this.resultBonusNumber = findViewById(R.id.resultBonusNumber);
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼
 
@@ -69,6 +85,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                displayResultLottoNumber(rounds.get(position));
                 displaySavedLottoList(rounds.get(position));
             }
 
@@ -76,6 +93,22 @@ public class SavedLottoListActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void displayResultLottoNumber(Integer round) {
+        Map<String, String> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
+        String returnValue = resultLottoMap.get("returnValue");
+        if(returnValue != null && "success".equals(returnValue)) {
+            this.resultLayout.setVisibility(View.VISIBLE);
+            this.resultOneNumber.setText(String.valueOf(resultLottoMap.get("drwtNo1")));
+            this.resultTwoNumber.setText(String.valueOf(resultLottoMap.get("drwtNo2")));
+            this.resultThreeNumber.setText(String.valueOf(resultLottoMap.get("drwtNo3")));
+            this.resultFourNumber.setText(String.valueOf(resultLottoMap.get("drwtNo4")));
+            this.resultFiveNumber.setText(String.valueOf(resultLottoMap.get("drwtNo5")));
+            this.resultBonusNumber.setText(String.valueOf(resultLottoMap.get("bnusNo")));
+        } else {
+            this.resultLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @SuppressLint("WrongViewCast")

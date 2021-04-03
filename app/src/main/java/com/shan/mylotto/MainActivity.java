@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +29,7 @@ import com.shan.mylotto.lotto.domain.LottoGame;
 import com.shan.mylotto.lotto.service.LottoGameService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
+import com.shan.mylotto.util.CommonUtil;
 
 import java.util.List;
 
@@ -165,10 +167,8 @@ public class MainActivity extends AppCompatActivity {
                         lottoColor = R.drawable.lotto_5;
                     }
 
-                    LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(120, 120);
+                    LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDP(getResources(), 40), CommonUtil.getConvertToDP(getResources(), 40));
                     buttonLp.setMargins(13, 0, 13, 50);
-                    buttonLp.width = 140;
-                    buttonLp.height = 140;
 
                     Button button = new Button(this);
                     button.setLayoutParams(buttonLp);
