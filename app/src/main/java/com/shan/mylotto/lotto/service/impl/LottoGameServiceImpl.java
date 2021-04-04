@@ -12,6 +12,7 @@ import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.util.DateUtil;
 import com.shan.mylotto.util.FileUtil;
 import com.shan.mylotto.util.JsoupTaskUtil;
+import com.shan.mylotto.util.OpenApiUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -151,58 +152,29 @@ public class LottoGameServiceImpl implements LottoGameService {
 
     // 로또 결과 api로 가져오기
     @Override
-    public Map<String, String> getLottoResultByDrwNo(int drwNo) {
+    public Map<String, Object> getLottoResultByDrwNo(int drwNo) {
+        // 로또 결과 url
         String urlStr = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=" + drwNo;
         System.out.println("===============================");
         System.out.println(urlStr);
         System.out.println("===============================");
 
-        AsyncTask<String, Integer, Map<String, String>> lottoResultApi = new AsyncTask<String, Integer, Map<String, String>>() {
+        AsyncTask<String, Integer, Map<String, Object>> lottoResultApi = new AsyncTask<String, Integer, Map<String, Object>>() {
             @Override
-            protected Map<String, String> doInBackground(String... params) {
-                Map<String, String> resultMap = new HashMap<>();
-                BufferedReader reader = null;
+            protected Map<String, Object> doInBackground(String... params) {
+                Map<String, Object> resultMap = new HashMap<>();
+                String resultJsonStr = OpenApiUtil.getRestApiByGetMethod(params[0]);
                 try {
-                    URL url = new URL(params[0]);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    if (conn != null) {
-                        conn.setConnectTimeout(10000); //10초 기다림
-                        conn.setRequestMethod("GET");
-
-                        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            StringBuffer resultJsonStr = new StringBuffer();
-                            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                            String line = null;
-                            while ((line = reader.readLine()) != null) {
-                                resultJsonStr.append(line);
-                            }
-                            System.out.println("==========================");
-                            System.out.println(resultJsonStr.toString());
-                            System.out.println("==========================");
-
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            resultMap = objectMapper.readValue(resultJsonStr.toString(), Map.class);
-                        }
-                    }
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    resultMap = objectMapper.readValue(resultJsonStr, Map.class);
                 } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
                 return resultMap;
             }
         };
 
-        Map<String, String> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
         try {
             resultMap = lottoResultApi.execute(urlStr).get();
         } catch (ExecutionException e) {

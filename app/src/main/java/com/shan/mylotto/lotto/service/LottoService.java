@@ -5,4 +5,6 @@ import com.shan.mylotto.lotto.domain.Lotto;
 public interface LottoService {
 
     public void makeLottoNumbers(Lotto lotto);
+
+    public int getLottoColor(int lottoNum);
 }

@@ -20,10 +20,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.domain.LottoGame;
 import com.shan.mylotto.lotto.service.LottoGameService;
+import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 
@@ -34,9 +36,11 @@ import static com.shan.mylotto.R.id.round;
 
 public class SavedLottoListActivity extends AppCompatActivity {
 
+    private LottoService lottoService;
     private LottoGameService lottoGameService;
     private TableLayout listTableLayout;
     private Toolbar myToolbar;
+    private TextView resultText;
     private LinearLayout resultLayout;
     private Button resultOneNumber;
     private Button resultTwoNumber;
@@ -55,9 +59,12 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
     @SuppressLint("WrongViewCast")
     public void init() {
-        this.lottoGameService = new LottoGameServiceImpl(new LottoServiceImpl());
+        this.lottoService = new LottoServiceImpl();
+        this.lottoGameService = new LottoGameServiceImpl(this.lottoService);
+
         this.listTableLayout = findViewById(R.id.listTableLayout);
         this.myToolbar = findViewById(R.id.myToolbar);
+        this.resultText = findViewById(R.id.resultText);
         this.resultLayout = findViewById(R.id.resultLayout);
         this.resultOneNumber = findViewById(R.id.resultOneNumber);
         this.resultTwoNumber = findViewById(R.id.resultTwoNumber);
@@ -95,19 +102,34 @@ public class SavedLottoListActivity extends AppCompatActivity {
         });
     }
 
+    // 당첨결과 로또번호 출력
     private void displayResultLottoNumber(Integer round) {
-        Map<String, String> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
-        String returnValue = resultLottoMap.get("returnValue");
+        Map<String, Object> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
+        String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue != null && "success".equals(returnValue)) {
             this.resultLayout.setVisibility(View.VISIBLE);
+            this.resultText.setText("당첨번호");
+
             this.resultOneNumber.setText(String.valueOf(resultLottoMap.get("drwtNo1")));
+            this.resultOneNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo1"))));
+
             this.resultTwoNumber.setText(String.valueOf(resultLottoMap.get("drwtNo2")));
+            this.resultTwoNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo2"))));
+
             this.resultThreeNumber.setText(String.valueOf(resultLottoMap.get("drwtNo3")));
+            this.resultThreeNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo3"))));
+
             this.resultFourNumber.setText(String.valueOf(resultLottoMap.get("drwtNo4")));
+            this.resultFourNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo4"))));
+
             this.resultFiveNumber.setText(String.valueOf(resultLottoMap.get("drwtNo5")));
+            this.resultFiveNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo5"))));
+
             this.resultBonusNumber.setText(String.valueOf(resultLottoMap.get("bnusNo")));
+            this.resultBonusNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("bnusNo"))));
         } else {
             this.resultLayout.setVisibility(View.INVISIBLE);
+            this.resultText.setText("당첨번호 결과가 없습니다.");
         }
     }
 

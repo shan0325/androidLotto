@@ -21,5 +21,5 @@ public interface LottoGameService {
 
     public List<LottoGame> findByRound(Context mBase, Integer round);
 
-    public Map<String, String> getLottoResultByDrwNo(int drwNo);
+    public Map<String, Object> getLottoResultByDrwNo(int drwNo);
 }

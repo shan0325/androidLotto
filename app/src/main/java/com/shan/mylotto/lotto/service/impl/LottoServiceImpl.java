@@ -1,5 +1,6 @@
 package com.shan.mylotto.lotto.service.impl;
 
+import com.shan.mylotto.R;
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.service.LottoService;
 
@@ -28,6 +29,23 @@ public class LottoServiceImpl implements LottoService {
         }
         Collections.sort(numbers);
         lotto.setNumbers(numbers);
+    }
+
+    @Override
+    public int getLottoColor(int lottoNum) {
+        int lottoColor = 0;
+        if(lottoNum < 10) {
+            lottoColor = R.drawable.lotto_1;
+        } else if(lottoNum < 20) {
+            lottoColor = R.drawable.lotto_2;
+        } else if(lottoNum < 30) {
+            lottoColor = R.drawable.lotto_3;
+        } else if(lottoNum < 40) {
+            lottoColor = R.drawable.lotto_4;
+        } else {
+            lottoColor = R.drawable.lotto_5;
+        }
+        return lottoColor;
     }
 
     public int getLottoRandomNumber() {

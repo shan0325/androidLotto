@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.domain.LottoGame;
 import com.shan.mylotto.lotto.service.LottoGameService;
+import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 import com.shan.mylotto.util.CommonUtil;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int SAVED_LOTTO_LIST = 1001;
 
+    private LottoService lottoService;
     private LottoGameService lottoGameService;
     private LottoGame lottoGame;
     private EditText round;
@@ -62,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init() {
-        this.lottoGameService = new LottoGameServiceImpl(new LottoServiceImpl());
+        this.lottoService = new LottoServiceImpl();
+        this.lottoGameService = new LottoGameServiceImpl(this.lottoService);
 
         this.round = findViewById(R.id.round);
         this.makeOne = findViewById(R.id.makeOne);
@@ -152,28 +155,13 @@ public class MainActivity extends AppCompatActivity {
                 lottoLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                 for(int j = 0; j < numbers.size(); j++) {
-                    Integer lottoNum = numbers.get(j);
-
-                    int lottoColor = 0;
-                    if(lottoNum < 10) {
-                        lottoColor = R.drawable.lotto_1;
-                    } else if(lottoNum < 20) {
-                        lottoColor = R.drawable.lotto_2;
-                    } else if(lottoNum < 30) {
-                        lottoColor = R.drawable.lotto_3;
-                    } else if(lottoNum < 40) {
-                        lottoColor = R.drawable.lotto_4;
-                    } else {
-                        lottoColor = R.drawable.lotto_5;
-                    }
-
                     LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDP(getResources(), 40), CommonUtil.getConvertToDP(getResources(), 40));
                     buttonLp.setMargins(13, 0, 13, 50);
 
                     Button button = new Button(this);
                     button.setLayoutParams(buttonLp);
                     button.setText(String.valueOf(numbers.get(j)));
-                    button.setBackgroundDrawable(ContextCompat.getDrawable(this, lottoColor));
+                    button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(j))));
                     button.setTextColor(Color.WHITE);
 
                     lottoLayout.addView(button);
