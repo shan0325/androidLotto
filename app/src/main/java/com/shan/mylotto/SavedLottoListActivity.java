@@ -140,9 +140,9 @@ public class SavedLottoListActivity extends AppCompatActivity {
         TableRow headTr = new TableRow(this);
         headTr.setBackgroundResource(R.drawable.border);
         headTr.setPadding(0,10,0,10);
-        makeTableRow(headTr, "아이디");
-        makeTableRow(headTr, "번호");
-        makeTableRow(headTr, "생성일자");
+        makeTableRow(headTr, "순서");
+        makeTableRow(headTr, "로또번호");
+        makeTableRow(headTr, "생성일시");
         listTableLayout.addView(headTr);
 
         List<LottoGame> list = lottoGameService.findByRound(getBaseContext(), round);
@@ -150,26 +150,32 @@ public class SavedLottoListActivity extends AppCompatActivity {
             LottoGame lottoGame = list.get(i);
             List<Lotto> lottos = lottoGame.getLottos();
 
+            TableRow bodyTr = new TableRow(this);
+            bodyTr.setBackgroundResource(R.drawable.border);
+            bodyTr.setPadding(0,10,0,10);
+            makeTableRow(bodyTr, String.valueOf(list.size() - i));
+
+            TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
                 List<Integer> numbers = lotto.getNumbers();
 
-                TableRow bodyTr = new TableRow(this);
-                bodyTr.setBackgroundResource(R.drawable.border);
-                bodyTr.setPadding(0,10,0,10);
-                makeTableRow(bodyTr, String.valueOf(lottoGame.getId()));
-                makeTableRow(bodyTr, numbers.toString());
-                makeTableRow(bodyTr, lotto.getMakeDate());
-                listTableLayout.addView(bodyTr);
+                TableRow lottoTr = new TableRow(this);
+                makeTableRow(lottoTr, numbers.toString());
+                lottoTl.addView(lottoTr);
             }
+            bodyTr.addView(lottoTl);
+            makeTableRow(bodyTr, lottos.get(0).getMakeDate());
+            listTableLayout.addView(bodyTr);
         }
     }
 
-    public void makeTableRow(TableRow tr, String text) {
+    public TextView makeTableRow(TableRow tr, String text) {
         TextView tv = new TextView(this);
         tv.setGravity(Gravity.CENTER);
         tv.setText(text);
         tr.addView(tv);
+        return tv;
     }
 
     @Override
