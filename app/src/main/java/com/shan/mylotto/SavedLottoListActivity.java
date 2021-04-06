@@ -3,6 +3,7 @@ package com.shan.mylotto;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -28,7 +29,9 @@ import com.shan.mylotto.lotto.service.LottoGameService;
 import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
+import com.shan.mylotto.util.CommonUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -141,7 +144,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         listTableLayout.removeAllViews();
 
         TableRow headTr = new TableRow(this);
-        headTr.setBackgroundResource(R.drawable.border);
+        headTr.setBackgroundResource(R.drawable.border_head);
         headTr.setPadding(0,10,0,10);
         headTr.addView(makeTableRowByTextView("순서"));
         headTr.addView(makeTableRowByTextView("로또번호"));
@@ -170,14 +173,29 @@ public class SavedLottoListActivity extends AppCompatActivity {
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
                 List<Integer> numbers = lotto.getNumbers();
-                String numbersStr = "";
-                for (int k = 0; k < numbers.size(); k++) {
-                    numbersStr += numbers.get(k) + " ";
-                }
 
                 TableRow lottoTr = new TableRow(this);
                 lottoTr.setGravity(Gravity.CENTER);
-                lottoTr.addView(makeTableRowByTextView(numbersStr));
+                for (int k = 0; k < numbers.size(); k++) {
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 22), CommonUtil.getConvertToDP(getResources(), 22));
+                    lp.setMargins(5, 5, 5, 5);
+
+                    Button button = new Button(this);
+                    button.setLayoutParams(lp);
+                    button.setTextSize(12);
+                    button.setText(String.valueOf(numbers.get(k)));
+                    if(checkPrizeLottoNumber(resultLottoMap, numbers.get(k)) == 1) { // 번호가 맞을경우
+                        button.setTextColor(Color.WHITE);
+                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
+                    } else if(checkPrizeLottoNumber(resultLottoMap, numbers.get(k)) == 2) { // 보너스일경우
+                        button.setTextColor(Color.BLACK);
+                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
+                    } else {
+                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.lotto_default));
+                    }
+
+                    lottoTr.addView(button);
+                }
                 lottoTl.addView(lottoTr);
             }
             bodyTr.addView(lottoTl);
@@ -187,21 +205,31 @@ public class SavedLottoListActivity extends AppCompatActivity {
     }
 
     // 당첨번호인지 확인
-    public boolean isPrizeLottoNumber(Map<String, Object> resultLottoMap, int lottoNumber) {
+    public int checkPrizeLottoNumber(Map<String, Object> resultLottoMap, int lottoNumber) {
+        int result = 0;
         if(resultLottoMap == null) {
-            return false;
+            return result;
         }
 
         String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue == null || !"success".equals(returnValue)) {
-            return false;
+            return result;
         }
 
         int drwtNo1 = (int) resultLottoMap.get("drwtNo1");
+        int drwtNo2 = (int) resultLottoMap.get("drwtNo2");
+        int drwtNo3 = (int) resultLottoMap.get("drwtNo3");
+        int drwtNo4 = (int) resultLottoMap.get("drwtNo4");
+        int drwtNo5 = (int) resultLottoMap.get("drwtNo5");
+        int bnusNo = (int) resultLottoMap.get("bnusNo");
 
-        // TODO 여기 할차례
+        if(Arrays.asList(drwtNo1, drwtNo2, drwtNo3, drwtNo4, drwtNo5).contains(lottoNumber)) {
+            result = 1;
+        } else if(bnusNo == lottoNumber) {
+            result = 2;
+        }
 
-        return true;
+        return result;
     }
 
     public TextView makeTableRowByTextView(String text) {
