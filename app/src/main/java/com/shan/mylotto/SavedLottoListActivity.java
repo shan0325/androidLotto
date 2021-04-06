@@ -29,6 +29,8 @@ import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -92,8 +94,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                displayResultLottoNumber(rounds.get(position));
-                displaySavedLottoList(rounds.get(position));
+                Map<String, Object> resultLottoMap = displayResultLottoNumber(rounds.get(position));
+                displaySavedLottoList(rounds.get(position), resultLottoMap);
             }
 
             @Override
@@ -103,7 +105,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
     }
 
     // 당첨결과 로또번호 출력
-    private void displayResultLottoNumber(Integer round) {
+    private Map<String, Object> displayResultLottoNumber(Integer round) {
         Map<String, Object> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
         String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue != null && "success".equals(returnValue)) {
@@ -131,50 +133,81 @@ public class SavedLottoListActivity extends AppCompatActivity {
             this.resultLayout.setVisibility(View.INVISIBLE);
             this.resultText.setText("당첨번호 결과가 없습니다.");
         }
+        return resultLottoMap;
     }
 
     @SuppressLint("WrongViewCast")
-    private void displaySavedLottoList(Integer round) {
+    private void displaySavedLottoList(Integer round, Map<String, Object> resultLottoMap) {
         listTableLayout.removeAllViews();
 
         TableRow headTr = new TableRow(this);
         headTr.setBackgroundResource(R.drawable.border);
         headTr.setPadding(0,10,0,10);
-        makeTableRow(headTr, "순서");
-        makeTableRow(headTr, "로또번호");
-        makeTableRow(headTr, "생성일시");
+        headTr.addView(makeTableRowByTextView("순서"));
+        headTr.addView(makeTableRowByTextView("로또번호"));
+        headTr.addView(makeTableRowByTextView("생성일시"));
         listTableLayout.addView(headTr);
 
         List<LottoGame> list = lottoGameService.findByRound(getBaseContext(), round);
+        Collections.sort(list, new Comparator<LottoGame>() {
+            @Override
+            public int compare(LottoGame o1, LottoGame o2) {
+                return o2.getMakeDate().compareTo(o1.getMakeDate());
+            }
+        });
+
         for(int i = 0; i < list.size(); i++) {
             LottoGame lottoGame = list.get(i);
             List<Lotto> lottos = lottoGame.getLottos();
 
             TableRow bodyTr = new TableRow(this);
+            bodyTr.setGravity(Gravity.CENTER_VERTICAL);
             bodyTr.setBackgroundResource(R.drawable.border);
             bodyTr.setPadding(0,10,0,10);
-            makeTableRow(bodyTr, String.valueOf(list.size() - i));
+            bodyTr.addView(makeTableRowByTextView(String.valueOf(list.size() - i)));
 
             TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
                 List<Integer> numbers = lotto.getNumbers();
+                String numbersStr = "";
+                for (int k = 0; k < numbers.size(); k++) {
+                    numbersStr += numbers.get(k) + " ";
+                }
 
                 TableRow lottoTr = new TableRow(this);
-                makeTableRow(lottoTr, numbers.toString());
+                lottoTr.setGravity(Gravity.CENTER);
+                lottoTr.addView(makeTableRowByTextView(numbersStr));
                 lottoTl.addView(lottoTr);
             }
             bodyTr.addView(lottoTl);
-            makeTableRow(bodyTr, lottos.get(0).getMakeDate());
+            bodyTr.addView(makeTableRowByTextView(lottoGame.getMakeDate()));
             listTableLayout.addView(bodyTr);
         }
     }
 
-    public TextView makeTableRow(TableRow tr, String text) {
+    // 당첨번호인지 확인
+    public boolean isPrizeLottoNumber(Map<String, Object> resultLottoMap, int lottoNumber) {
+        if(resultLottoMap == null) {
+            return false;
+        }
+
+        String returnValue = (String) resultLottoMap.get("returnValue");
+        if(returnValue == null || !"success".equals(returnValue)) {
+            return false;
+        }
+
+        int drwtNo1 = (int) resultLottoMap.get("drwtNo1");
+
+        // TODO 여기 할차례
+
+        return true;
+    }
+
+    public TextView makeTableRowByTextView(String text) {
         TextView tv = new TextView(this);
         tv.setGravity(Gravity.CENTER);
         tv.setText(text);
-        tr.addView(tv);
         return tv;
     }
 

@@ -163,7 +163,7 @@
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="저장하기"
+            android:text="저장"
             android:background="@color/colorPrimary"
             android:textColor="@color/colorWhite"/>
 
