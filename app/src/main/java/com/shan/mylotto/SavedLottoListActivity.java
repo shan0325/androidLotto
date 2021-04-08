@@ -52,6 +52,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
     private Button resultThreeNumber;
     private Button resultFourNumber;
     private Button resultFiveNumber;
+    private Button resultSixNumber;
     private Button resultBonusNumber;
 
     @Override
@@ -76,6 +77,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.resultThreeNumber = findViewById(R.id.resultThreeNumber);
         this.resultFourNumber = findViewById(R.id.resultFourNumber);
         this.resultFiveNumber = findViewById(R.id.resultFiveNumber);
+        this.resultSixNumber = findViewById(R.id.resultSixNumber);
         this.resultBonusNumber = findViewById(R.id.resultBonusNumber);
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼
@@ -130,6 +132,9 @@ public class SavedLottoListActivity extends AppCompatActivity {
             this.resultFiveNumber.setText(String.valueOf(resultLottoMap.get("drwtNo5")));
             this.resultFiveNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo5"))));
 
+            this.resultSixNumber.setText(String.valueOf(resultLottoMap.get("drwtNo6")));
+            this.resultSixNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("drwtNo6"))));
+
             this.resultBonusNumber.setText(String.valueOf(resultLottoMap.get("bnusNo")));
             this.resultBonusNumber.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor((Integer) resultLottoMap.get("bnusNo"))));
         } else {
@@ -166,7 +171,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
             TableRow bodyTr = new TableRow(this);
             bodyTr.setGravity(Gravity.CENTER_VERTICAL);
             bodyTr.setBackgroundResource(R.drawable.border);
-            bodyTr.setPadding(0,10,0,10);
+            bodyTr.setPadding(0,20,0,20);
             bodyTr.addView(makeTableRowByTextView(String.valueOf(list.size() - i)));
 
             TableLayout lottoTl = new TableLayout(this);
@@ -199,7 +204,14 @@ public class SavedLottoListActivity extends AppCompatActivity {
                 lottoTl.addView(lottoTr);
             }
             bodyTr.addView(lottoTl);
-            bodyTr.addView(makeTableRowByTextView(lottoGame.getMakeDate()));
+
+            String dateTime = "";
+            if(lottoGame.getMakeDate() != null && lottoGame.getMakeDate().length() == 19) {
+                String date = lottoGame.getMakeDate().substring(0, 10);
+                String time = lottoGame.getMakeDate().substring(11);
+                dateTime = date + "\n" + time;
+            }
+            bodyTr.addView(makeTableRowByTextView(dateTime));
             listTableLayout.addView(bodyTr);
         }
     }
@@ -221,9 +233,10 @@ public class SavedLottoListActivity extends AppCompatActivity {
         int drwtNo3 = (int) resultLottoMap.get("drwtNo3");
         int drwtNo4 = (int) resultLottoMap.get("drwtNo4");
         int drwtNo5 = (int) resultLottoMap.get("drwtNo5");
+        int drwtNo6 = (int) resultLottoMap.get("drwtNo6");
         int bnusNo = (int) resultLottoMap.get("bnusNo");
 
-        if(Arrays.asList(drwtNo1, drwtNo2, drwtNo3, drwtNo4, drwtNo5).contains(lottoNumber)) {
+        if(Arrays.asList(drwtNo1, drwtNo2, drwtNo3, drwtNo4, drwtNo5, drwtNo6).contains(lottoNumber)) {
             result = 1;
         } else if(bnusNo == lottoNumber) {
             result = 2;

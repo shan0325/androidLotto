@@ -80,7 +80,6 @@
                 android:id="@+id/resultOneNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_1"
                 android:textColor="@color/colorWhite"
                 android:layout_marginRight="5dp"
                 />
@@ -88,7 +87,6 @@
                 android:id="@+id/resultTwoNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_2"
                 android:textColor="@color/colorWhite"
                 android:layout_marginRight="5dp"
                 />
@@ -96,7 +94,6 @@
                 android:id="@+id/resultThreeNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_3"
                 android:textColor="@color/colorWhite"
                 android:layout_marginRight="5dp"
                 />
@@ -104,7 +101,6 @@
                 android:id="@+id/resultFourNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_4"
                 android:textColor="@color/colorWhite"
                 android:layout_marginRight="5dp"
                 />
@@ -112,7 +108,13 @@
                 android:id="@+id/resultFiveNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_5"
+                android:textColor="@color/colorWhite"
+                android:layout_marginRight="5dp"
+                />
+            <Button
+                android:id="@+id/resultSixNumber"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:textColor="@color/colorWhite"
                 android:layout_marginRight="5dp"
                 />
@@ -126,8 +128,6 @@
                 android:id="@+id/resultBonusNumber"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/lotto_1"
-                android:textColor="@color/colorWhite"
                 />
         </LinearLayout>
     </LinearLayout>

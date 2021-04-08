@@ -6,6 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LottoService lottoService;
     private LottoGameService lottoGameService;
+
     private LottoGame lottoGame;
     private EditText round;
     private Button makeOne;
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout saveBtnLayout;
     private TextView message;
     private Toolbar myToolbar;
+    private View disScrollView;
+    private View loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         this.saveBtnLayout = findViewById(R.id.saveBtnLayout);
         this.message = findViewById(R.id.message);
         this.myToolbar = findViewById(R.id.myToolbar);
+        this.disScrollView = findViewById(R.id.disScrollView);
+        this.loadingView = findViewById(R.id.loading_spinner);
         setSupportActionBar(this.myToolbar);
 
         // 포커스
@@ -103,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 lottoGame = lottoGameService.makeLottoGame(Integer.parseInt(makeNumber));
                 displayLottos(lottoGame.getLottos());
 
-                displayMessage("생성이 완료되었습니다.");
+                CommonUtil.showToast(getApplicationContext(),"생성이 완료되었습니다.");
+                saveBtn.setText("저장");
             }
         };
         this.makeOne.setOnClickListener(makeBtnListener);
@@ -118,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String roundStr = round.getText().toString().trim();
                 if("".equals(roundStr)) {
-                    displayMessage("회차를 입력해주세요.");
+                    CommonUtil.showToast(getApplicationContext(),"회차를 입력해주세요.");
                     round.requestFocus();
                     return;
                 }
@@ -127,18 +137,14 @@ public class MainActivity extends AppCompatActivity {
                 //int result = FileUtil.writeJsonFile(getBaseContext(), lottoGame);
                 int result = lottoGameService.saveFileByLottoGame(getBaseContext(), lottoGame);
                 if(result == 0) {
-                    displayMessage("저장을 완료하였습니다.");
-                    saveBtnLayout.setVisibility(View.INVISIBLE);
+                    CommonUtil.showToast(getApplicationContext(),"저장을 완료하였습니다.");
+                    //saveBtnLayout.setVisibility(View.INVISIBLE);
+                    saveBtn.setText("저장 완료");
                 } else {
-                    displayMessage("저장을 실패하였습니다.");
+                    CommonUtil.showToast(getApplicationContext(),"저장을 실패하였습니다.");
                 }
             }
         });
-    }
-
-    public void displayMessage(String message) {
-        //this.message.setText(message);
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public void displayLottos(List<Lotto> lottos) {

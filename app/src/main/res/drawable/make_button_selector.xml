@@ -1,0 +1,24 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 눌렀을 때 -->
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/make_button_pressed"/>
+
+    <!-- 누리지 않은(보통의) -->
+    <item
+        android:state_window_focused="false"
+        android:state_enabled="true"
+        android:drawable="@drawable/make_button"/>
+
+    <!-- 누리지 않은(보통의) -->
+    <item
+        android:state_enabled="true"
+        android:drawable="@drawable/make_button"/>
+
+    <!-- 비활성화 되었을 때 -->
+    <item
+        android:state_enabled="false"
+        android:drawable="@drawable/make_button"/>
+
+</selector>
