@@ -19,7 +19,7 @@ public class JsoupTaskUtil extends AsyncTask<String, Integer, Elements> {
             Document doc = Jsoup.connect(url).get();
             elements = doc.select(strings[1]);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

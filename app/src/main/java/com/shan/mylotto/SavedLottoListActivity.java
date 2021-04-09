@@ -30,7 +30,9 @@ import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 import com.shan.mylotto.util.CommonUtil;
+import com.shan.mylotto.util.FileUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,6 +56,12 @@ public class SavedLottoListActivity extends AppCompatActivity {
     private Button resultFiveNumber;
     private Button resultSixNumber;
     private Button resultBonusNumber;
+    private Spinner roundSpinner;
+
+    private List<Integer> roundList;
+    private Map<String, Object> resultLottoMap;
+    private List<LottoGame> savedList;
+    private Button.OnClickListener delBtnListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +69,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_saved_lotto_list);
 
         init();
+        eventHandlerInit();
+        initRoundSpinner();
     }
 
     @SuppressLint("WrongViewCast")
@@ -79,34 +89,50 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.resultFiveNumber = findViewById(R.id.resultFiveNumber);
         this.resultSixNumber = findViewById(R.id.resultSixNumber);
         this.resultBonusNumber = findViewById(R.id.resultBonusNumber);
+        this.roundSpinner = findViewById(R.id.roundsSpinner);
+
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼
-
-        displayRoundsSpinner();
     }
 
-    private void displayRoundsSpinner() {
-        final List<Integer> rounds = lottoGameService.findLottoGameRounds(getBaseContext());
-        System.out.println("===============================");
-        System.out.println(rounds);
-        System.out.println("===============================");
+    public void eventHandlerInit() {
+        // 삭제버튼 클릭 시
+        this.delBtnListener = new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button btn = (Button) v;
+                String id = btn.getHint().toString();
 
-        Spinner spinner = (Spinner) findViewById(R.id.roundsSpinner);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, rounds);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+                if(savedList != null && savedList.size() > 0) {
+                    for (int i = 0; i < savedList.size(); i++) {
+                        if(id.equals(String.valueOf(savedList.get(i).getId()))) {
+                            savedList.remove(savedList.get(i));
+                            FileUtil.writeJsonFile(getBaseContext(), savedList);
+                            initRoundSpinner();
+                        }
+                    }
+                }
+            }
+        };
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.roundSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Map<String, Object> resultLottoMap = displayResultLottoNumber(rounds.get(position));
-                displaySavedLottoList(rounds.get(position), resultLottoMap);
+                resultLottoMap = displayResultLottoNumber(roundList.get(position));
+                displaySavedLottoList(roundList.get(position));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void initRoundSpinner() {
+        this.roundList = lottoGameService.findLottoGameRounds(getBaseContext());
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roundList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.roundSpinner.setAdapter(adapter);
     }
 
     // 당첨결과 로또번호 출력
@@ -145,7 +171,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
     }
 
     @SuppressLint("WrongViewCast")
-    private void displaySavedLottoList(Integer round, Map<String, Object> resultLottoMap) {
+    private void displaySavedLottoList(Integer round) {
         listTableLayout.removeAllViews();
 
         TableRow headTr = new TableRow(this);
@@ -154,25 +180,30 @@ public class SavedLottoListActivity extends AppCompatActivity {
         headTr.addView(makeTableRowByTextView("순서"));
         headTr.addView(makeTableRowByTextView("로또번호"));
         headTr.addView(makeTableRowByTextView("생성일시"));
+        headTr.addView(makeTableRowByTextView("삭제"));
         listTableLayout.addView(headTr);
 
-        List<LottoGame> list = lottoGameService.findByRound(getBaseContext(), round);
-        Collections.sort(list, new Comparator<LottoGame>() {
+        this.savedList = lottoGameService.findByRound(getBaseContext(), round);
+        if(this.savedList == null || this.savedList.size() == 0) {
+            return;
+        }
+
+        Collections.sort(this.savedList, new Comparator<LottoGame>() {
             @Override
             public int compare(LottoGame o1, LottoGame o2) {
                 return o2.getMakeDate().compareTo(o1.getMakeDate());
             }
         });
 
-        for(int i = 0; i < list.size(); i++) {
-            LottoGame lottoGame = list.get(i);
+        for(int i = 0; i < this.savedList.size(); i++) {
+            LottoGame lottoGame = this.savedList.get(i);
             List<Lotto> lottos = lottoGame.getLottos();
 
             TableRow bodyTr = new TableRow(this);
             bodyTr.setGravity(Gravity.CENTER_VERTICAL);
             bodyTr.setBackgroundResource(R.drawable.border);
             bodyTr.setPadding(0,20,0,20);
-            bodyTr.addView(makeTableRowByTextView(String.valueOf(list.size() - i)));
+            bodyTr.addView(makeTableRowByTextView(String.valueOf(this.savedList.size() - i)));
 
             TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {
@@ -189,10 +220,10 @@ public class SavedLottoListActivity extends AppCompatActivity {
                     button.setLayoutParams(lp);
                     button.setTextSize(12);
                     button.setText(String.valueOf(numbers.get(k)));
-                    if(checkPrizeLottoNumber(resultLottoMap, numbers.get(k)) == 1) { // 번호가 맞을경우
+                    if(checkPrizeLottoNumber(this.resultLottoMap, numbers.get(k)) == 1) { // 번호가 맞을경우
                         button.setTextColor(Color.WHITE);
                         button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
-                    } else if(checkPrizeLottoNumber(resultLottoMap, numbers.get(k)) == 2) { // 보너스일경우
+                    } else if(checkPrizeLottoNumber(this.resultLottoMap, numbers.get(k)) == 2) { // 보너스일경우
                         button.setTextColor(Color.BLACK);
                         button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
                     } else {
@@ -212,6 +243,16 @@ public class SavedLottoListActivity extends AppCompatActivity {
                 dateTime = date + "\n" + time;
             }
             bodyTr.addView(makeTableRowByTextView(dateTime));
+
+            TableRow.LayoutParams delBtnLp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 60), CommonUtil.getConvertToDP(getResources(), 40));
+            Button delBtn = new Button(this);
+            delBtn.setLayoutParams(delBtnLp);
+            delBtn.setText("삭제");
+            delBtn.setTextSize(12);
+            delBtn.setHint(String.valueOf(lottoGame.getId()));
+            delBtn.setOnClickListener(this.delBtnListener);
+            bodyTr.addView(delBtn);
+
             listTableLayout.addView(bodyTr);
         }
     }

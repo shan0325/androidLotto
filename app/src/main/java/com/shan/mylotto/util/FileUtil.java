@@ -41,7 +41,7 @@ public class FileUtil {
             while ((temp = br.readLine()) != null) {
                 jsonStr.append(temp);
             }
-            //System.out.println("jsonStr : " + jsonStr.toString());
+            System.out.println("jsonStr : " + jsonStr.toString());
 
             if(!"".equals(jsonStr.toString())) {
                 list = objectMapper.readValue(jsonStr.toString(), objectMapper.getTypeFactory().constructCollectionType(List.class, LottoGame.class));

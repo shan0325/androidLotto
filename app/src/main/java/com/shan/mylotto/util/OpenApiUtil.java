@@ -20,7 +20,7 @@ public class OpenApiUtil {
             URL url = new URL(paramUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             if (conn != null) {
-                conn.setConnectTimeout(10000); //10초 기다림
+                conn.setConnectTimeout(3000); //3초 기다림
                 conn.setRequestMethod("GET");
 
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -35,9 +35,7 @@ public class OpenApiUtil {
                     System.out.println("==========================");
                 }
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (reader != null) {

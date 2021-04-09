@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private LottoService lottoService;
     private LottoGameService lottoGameService;
 
+    private Toast mToast;
     private LottoGame lottoGame;
     private EditText round;
     private Button makeOne;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private View disScrollView;
     private View loadingView;
 
+    private boolean isSaved;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         eventHandlerInit();
+
+        // 회차 정보 넣기
+        this.round.setText(lottoGameService.getLottoRoundByDhlottery());
     }
 
     public void init() {
@@ -112,8 +118,9 @@ public class MainActivity extends AppCompatActivity {
                 lottoGame = lottoGameService.makeLottoGame(Integer.parseInt(makeNumber));
                 displayLottos(lottoGame.getLottos());
 
-                CommonUtil.showToast(getApplicationContext(),"생성이 완료되었습니다.");
+                showToast(getApplicationContext(),"생성을 완료하였습니다.");
                 saveBtn.setText("저장");
+                isSaved = false;
             }
         };
         this.makeOne.setOnClickListener(makeBtnListener);
@@ -126,9 +133,14 @@ public class MainActivity extends AppCompatActivity {
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isSaved) {
+                    showToast(getApplicationContext(),"이미 저장을 완료하였습니다.");
+                    return;
+                }
+
                 String roundStr = round.getText().toString().trim();
                 if("".equals(roundStr)) {
-                    CommonUtil.showToast(getApplicationContext(),"회차를 입력해주세요.");
+                    showToast(getApplicationContext(),"회차를 입력해주세요.");
                     round.requestFocus();
                     return;
                 }
@@ -137,11 +149,13 @@ public class MainActivity extends AppCompatActivity {
                 //int result = FileUtil.writeJsonFile(getBaseContext(), lottoGame);
                 int result = lottoGameService.saveFileByLottoGame(getBaseContext(), lottoGame);
                 if(result == 0) {
-                    CommonUtil.showToast(getApplicationContext(),"저장을 완료하였습니다.");
+                    showToast(getApplicationContext(),"저장을 완료하였습니다.");
                     //saveBtnLayout.setVisibility(View.INVISIBLE);
                     saveBtn.setText("저장 완료");
+                    isSaved = true;
                 } else {
-                    CommonUtil.showToast(getApplicationContext(),"저장을 실패하였습니다.");
+                    showToast(getApplicationContext(),"저장을 실패하였습니다.");
+                    saveBtn.setText("저장 실패");
                 }
             }
         });
@@ -174,11 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 this.disLayout.addView(lottoLayout);
             }
-            this.roundLayout.setVisibility(View.VISIBLE);
             this.saveBtnLayout.setVisibility(View.VISIBLE);
-
-            // 회차 정보 넣기
-            this.round.setText(lottoGameService.getLottoRoundByDhlottery());
         }
     }
 
@@ -220,5 +230,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void showToast(Context context, String message) {
+        if(mToast == null) {
+            mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        } else {
+            mToast.setText(message);
+        }
+        mToast.show();
     }
 }

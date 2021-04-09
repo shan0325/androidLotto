@@ -76,9 +76,7 @@ public class LottoGameServiceImpl implements LottoGameService {
                 result = String.valueOf(Integer.parseInt(elements.text()) + 1);
             }
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -166,8 +164,10 @@ public class LottoGameServiceImpl implements LottoGameService {
                 String resultJsonStr = OpenApiUtil.getRestApiByGetMethod(params[0]);
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    resultMap = objectMapper.readValue(resultJsonStr, Map.class);
-                } catch (IOException e) {
+                    if(resultJsonStr != null && !resultJsonStr.isEmpty()) {
+                        resultMap = objectMapper.readValue(resultJsonStr, Map.class);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return resultMap;
