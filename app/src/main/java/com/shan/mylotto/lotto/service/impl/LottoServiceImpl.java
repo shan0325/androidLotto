@@ -40,6 +40,11 @@ public class LottoServiceImpl implements LottoService {
         this.lottoGameDAO = new LottoGameDAO(context);
     }
 
+    /**
+     * 로또 번호 만들기
+     * @param length
+     * @return
+     */
     @Override
     public List<Lotto> makeLotto(int length) {
         List<Lotto> lottos = new ArrayList<>();
@@ -96,6 +101,12 @@ public class LottoServiceImpl implements LottoService {
         return lottoColor;
     }
 
+    /**
+     * 로또 저장하기
+     * @param round
+     * @param lottoList
+     * @return
+     */
     @Override
     public int insertLottoList(int round, List<Lotto> lottoList) {
         if(lottoList != null && lottoList.size() > 0) {
@@ -113,6 +124,10 @@ public class LottoServiceImpl implements LottoService {
         return 0;
     }
 
+    /**
+     * 이번주 로또 회차번호 가져오기
+     * @return
+     */
     @Override
     public String getLottoRoundByDhlottery() {
         String result = "";
@@ -131,7 +146,11 @@ public class LottoServiceImpl implements LottoService {
         return result;
     }
 
-    // 로또 결과 api로 가져오기
+    /**
+     * 로또 결과 api로 가져오기
+     * @param drwNo
+     * @return
+     */
     @Override
     public Map<String, Object> getLottoResultByDrwNo(int drwNo) {
         // 로또 결과 url
@@ -168,17 +187,23 @@ public class LottoServiceImpl implements LottoService {
         return resultMap;
     }
 
+    /**
+     * 회차 목록 가져오기
+     * @return
+     */
     @Override
     public List<Integer> findLottoRounds() {
-        return lottoDAO.findLottoRounds();
+        return lottoGameDAO.findLottoRounds();
     }
 
+    /**
+     * 회차로 저장된 로또 가져오기
+     * @param round
+     * @return
+     */
     @Override
     public List<LottoGame> findSavedLottoByRound(int round) {
         List<LottoGame> lottoGameList = lottoGameDAO.findSavedLottoGameByRound(round);
-        System.out.println("=======================================");
-        System.out.println(lottoGameList);
-        System.out.println("=======================================");
 
         if(lottoGameList != null && lottoGameList.size() > 0) {
             for (int i = 0 ; i < lottoGameList.size(); i++) {
@@ -187,6 +212,16 @@ public class LottoServiceImpl implements LottoService {
             }
         }
         return lottoGameList;
+    }
+
+    /**
+     * 저장된 로또 삭제 처리
+     * @param lottoGameId
+     */
+    @Override
+    public void deleteLottoGame(int lottoGameId) {
+        lottoGameDAO.deleteLottoGameById(lottoGameId);
+        lottoDAO.deleteLottoByLottoGameId(lottoGameId);
     }
 
     /**

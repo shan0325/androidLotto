@@ -31,15 +31,6 @@ public class LottoDAO {
                                             "', DATETIME('now', 'localtime'))");
     }
 
-    public List<Integer> findLottoRounds() {
-        return sqlTemplate.select("SELECT DISTINCT round FROM lotto", new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(Cursor cursor) {
-                return cursor.getInt(0);
-            }
-        });
-    }
-
     public List<Lotto> findSavedLottoByRound(int round) {
         return sqlTemplate.select("SELECT id, lotto_game_id, round, num_one, num_two, num_three, num_four, num_five, num_six, make_date, reg_date FROM lotto WHERE round = " + round + " ORDER BY id DESC", new RowMapper<Lotto>() {
             @Override
@@ -80,5 +71,9 @@ public class LottoDAO {
                 return lotto;
             }
         });
+    }
+
+    public void deleteLottoByLottoGameId(int lottoGameId) {
+        sqlTemplate.delete("DELETE FROM lotto WHERE lotto_game_id = " + lottoGameId);
     }
 }

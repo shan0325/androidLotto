@@ -1,10 +1,7 @@
 package com.shan.mylotto;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -25,21 +22,13 @@ import androidx.core.content.ContextCompat;
 
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.domain.LottoGame;
-import com.shan.mylotto.lotto.service.LottoGameService;
 import com.shan.mylotto.lotto.service.LottoService;
-import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 import com.shan.mylotto.util.CommonUtil;
-import com.shan.mylotto.util.FileUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
-import static com.shan.mylotto.R.id.round;
 
 public class SavedLottoListActivity extends AppCompatActivity {
 
@@ -105,16 +94,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
                 Button btn = (Button) v;
                 String id = btn.getHint().toString();
 
-                /*if(roundSavedList != null && roundSavedList.size() > 0) {
-                    for (int i = 0; i < roundSavedList.size(); i++) {
-                        if(id.equals(String.valueOf(roundSavedList.get(i).getId()))) {
-                            roundSavedList.remove(roundSavedList.get(i));
-                            FileUtil.writeJsonFile(getBaseContext(), roundSavedList);
-                            break;
-                        }
-                    }
-                    displaySavedLottoList(curRound);
-                }*/
+                lottoService.deleteLottoGame(Integer.parseInt(id));
+                displaySavedLottoList(curRound);
             }
         };
 

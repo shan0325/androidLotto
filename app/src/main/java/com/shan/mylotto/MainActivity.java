@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -27,13 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shan.mylotto.lotto.domain.Lotto;
-import com.shan.mylotto.lotto.domain.LottoGame;
-import com.shan.mylotto.lotto.service.LottoGameService;
 import com.shan.mylotto.lotto.service.LottoService;
-import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 import com.shan.mylotto.util.CommonUtil;
-import com.shan.mylotto.db.LottoDBHelper;
 
 import java.util.List;
 

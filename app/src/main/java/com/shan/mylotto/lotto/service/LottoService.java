@@ -23,4 +23,6 @@ public interface LottoService {
     public List<Integer> findLottoRounds();
 
     public List<LottoGame> findSavedLottoByRound(int round);
+
+    public void deleteLottoGame(int lottoGameId);
 }

@@ -39,4 +39,17 @@ public class LottoGameDAO {
             }
         });
     }
+
+    public List<Integer> findLottoRounds() {
+        return sqlTemplate.select("SELECT DISTINCT round FROM lotto_game", new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(Cursor cursor) {
+                return cursor.getInt(0);
+            }
+        });
+    }
+
+    public void deleteLottoGameById(int id) {
+        sqlTemplate.delete("DELETE FROM lotto_game WHERE id = " + id);
+    }
 }
