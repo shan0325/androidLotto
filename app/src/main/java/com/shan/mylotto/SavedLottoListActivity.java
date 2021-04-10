@@ -44,7 +44,7 @@ import static com.shan.mylotto.R.id.round;
 public class SavedLottoListActivity extends AppCompatActivity {
 
     private LottoService lottoService;
-    private LottoGameService lottoGameService;
+
     private TableLayout listTableLayout;
     private Toolbar myToolbar;
     private TextView resultText;
@@ -77,8 +77,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
     @SuppressLint("WrongViewCast")
     public void init() {
-        this.lottoService = new LottoServiceImpl();
-        this.lottoGameService = new LottoGameServiceImpl(this.lottoService);
+        this.lottoService = new LottoServiceImpl(this);
 
         this.listTableLayout = findViewById(R.id.listTableLayout);
         this.myToolbar = findViewById(R.id.myToolbar);
@@ -106,7 +105,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
                 Button btn = (Button) v;
                 String id = btn.getHint().toString();
 
-                if(roundSavedList != null && roundSavedList.size() > 0) {
+                /*if(roundSavedList != null && roundSavedList.size() > 0) {
                     for (int i = 0; i < roundSavedList.size(); i++) {
                         if(id.equals(String.valueOf(roundSavedList.get(i).getId()))) {
                             roundSavedList.remove(roundSavedList.get(i));
@@ -115,7 +114,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
                         }
                     }
                     displaySavedLottoList(curRound);
-                }
+                }*/
             }
         };
 
@@ -134,8 +133,9 @@ public class SavedLottoListActivity extends AppCompatActivity {
         });
     }
 
+    // 회자 스피너 셋팅
     private void roundSpinnerInit() {
-        this.roundList = lottoGameService.findLottoGameRounds(getBaseContext());
+        this.roundList = lottoService.findLottoRounds();
 
         if(this.roundList == null || this.roundList.size() == 0) {
             this.roundLayout.setVisibility(View.INVISIBLE);
@@ -152,7 +152,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
     // 당첨결과 로또번호 출력
     private Map<String, Object> displayResultLottoNumber(Integer round) {
-        Map<String, Object> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
+        Map<String, Object> resultLottoMap = lottoService.getLottoResultByDrwNo(round);
 
         String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue != null && "success".equals(returnValue)) {
@@ -199,17 +199,10 @@ public class SavedLottoListActivity extends AppCompatActivity {
         headTr.addView(makeTableRowByTextView("삭제"));
         listTableLayout.addView(headTr);
 
-        this.roundSavedList = lottoGameService.findByRound(getBaseContext(), round);
+        this.roundSavedList = lottoService.findSavedLottoByRound(round);
         if(this.roundSavedList == null || this.roundSavedList.size() == 0) {
             return;
         }
-
-        Collections.sort(this.roundSavedList, new Comparator<LottoGame>() {
-            @Override
-            public int compare(LottoGame o1, LottoGame o2) {
-                return o2.getMakeDate().compareTo(o1.getMakeDate());
-            }
-        });
 
         for(int i = 0; i < this.roundSavedList.size(); i++) {
             LottoGame lottoGame = this.roundSavedList.get(i);
@@ -224,38 +217,22 @@ public class SavedLottoListActivity extends AppCompatActivity {
             TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
-                List<Integer> numbers = lotto.getNumbers();
-
                 TableRow lottoTr = new TableRow(this);
                 lottoTr.setGravity(Gravity.CENTER);
-                for (int k = 0; k < numbers.size(); k++) {
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 22), CommonUtil.getConvertToDP(getResources(), 22));
-                    lp.setMargins(5, 5, 5, 5);
-
-                    Button button = new Button(this);
-                    button.setLayoutParams(lp);
-                    button.setTextSize(12);
-                    button.setText(String.valueOf(numbers.get(k)));
-                    if(checkPrizeLottoNumber(this.resultLottoMap, numbers.get(k)) == 1) { // 번호가 맞을경우
-                        button.setTextColor(Color.WHITE);
-                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
-                    } else if(checkPrizeLottoNumber(this.resultLottoMap, numbers.get(k)) == 2) { // 보너스일경우
-                        button.setTextColor(Color.BLACK);
-                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(k))));
-                    } else {
-                        button.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.lotto_default));
-                    }
-
-                    lottoTr.addView(button);
-                }
+                lottoTr.addView(makeLottoBtn(lotto.getNumOne()));
+                lottoTr.addView(makeLottoBtn(lotto.getNumTwo()));
+                lottoTr.addView(makeLottoBtn(lotto.getNumThree()));
+                lottoTr.addView(makeLottoBtn(lotto.getNumFour()));
+                lottoTr.addView(makeLottoBtn(lotto.getNumFive()));
+                lottoTr.addView(makeLottoBtn(lotto.getNumSix()));
                 lottoTl.addView(lottoTr);
             }
             bodyTr.addView(lottoTl);
 
             String dateTime = "";
-            if(lottoGame.getMakeDate() != null && lottoGame.getMakeDate().length() == 19) {
-                String date = lottoGame.getMakeDate().substring(0, 10);
-                String time = lottoGame.getMakeDate().substring(11);
+            if(lottoGame.getRegDate() != null && lottoGame.getRegDate().length() == 19) {
+                String date = lottoGame.getRegDate().substring(0, 10);
+                String time = lottoGame.getRegDate().substring(11);
                 dateTime = date + "\n" + time;
             }
             bodyTr.addView(makeTableRowByTextView(dateTime));
@@ -271,6 +248,26 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
             listTableLayout.addView(bodyTr);
         }
+    }
+
+    public Button makeLottoBtn(int lottoNum) {
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 22), CommonUtil.getConvertToDP(getResources(), 22));
+        lp.setMargins(5, 5, 5, 5);
+
+        Button button = new Button(this);
+        button.setLayoutParams(lp);
+        button.setTextSize(12);
+        button.setText(String.valueOf(lottoNum));
+        if(checkPrizeLottoNumber(this.resultLottoMap, lottoNum) == 1) { // 번호가 맞을경우
+            button.setTextColor(Color.WHITE);
+            button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
+        } else if(checkPrizeLottoNumber(this.resultLottoMap, lottoNum) == 2) { // 보너스일경우
+            button.setTextColor(Color.BLACK);
+            button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
+        } else {
+            button.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.lotto_default));
+        }
+        return button;
     }
 
     // 당첨번호인지 확인

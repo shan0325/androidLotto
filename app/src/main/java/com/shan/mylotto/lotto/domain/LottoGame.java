@@ -8,8 +8,7 @@ public class LottoGame {
     private Integer id;
     private Integer round;
     private List<Lotto> lottos;
-    private String makeDate;
-    private String saveDate;
+    private String regDate;
 
     public Integer getId() {
         return id;
@@ -35,19 +34,21 @@ public class LottoGame {
         this.lottos = lottos;
     }
 
-    public String getMakeDate() {
-        return makeDate;
+    public String getRegDate() {
+        return regDate;
     }
 
-    public void setMakeDate(String makeDate) {
-        this.makeDate = makeDate;
+    public void setRegDate(String regDate) {
+        this.regDate = regDate;
     }
 
-    public String getSaveDate() {
-        return saveDate;
-    }
-
-    public void setSaveDate(String saveDate) {
-        this.saveDate = saveDate;
+    @Override
+    public String toString() {
+        return "LottoGame{" +
+                "id=" + id +
+                ", round=" + round +
+                ", lottos=" + lottos +
+                ", regDate='" + regDate + '\'' +
+                '}';
     }
 }

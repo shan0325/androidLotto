@@ -17,13 +17,15 @@ public class LottoDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // 테이블 생성
-        db.execSQL("CREATE TABLE lotto (id INTEGER PRIMARY KEY AUTOINCREMENT, round INTEGER, num_one INTEGER, num_two INTEGER, num_three INTEGER, num_four INTEGER, num_five INTEGER, num_six INTEGER, make_date TEXT, save_date TEXT)");
+        db.execSQL("CREATE TABLE lotto (id INTEGER PRIMARY KEY AUTOINCREMENT, lotto_game_id INTEGER, round INTEGER, num_one INTEGER, num_two INTEGER, num_three INTEGER, num_four INTEGER, num_five INTEGER, num_six INTEGER, make_date TEXT, reg_date TEXT)");
+        db.execSQL("CREATE TABLE lotto_game (id INTEGER PRIMARY KEY AUTOINCREMENT, round INTEGER, reg_date TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // 버전이 증가하면 해당 테이블을 삭제하고 다시 생성합니다.
         db.execSQL("DROP TABLE IF EXISTS lotto");
+        db.execSQL("DROP TABLE IF EXISTS lotto_game");
         onCreate(db);
     }
 

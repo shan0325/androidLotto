@@ -1,5 +1,6 @@
 package com.shan.mylotto.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,16 +8,20 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class sqlTemplate extends LottoDBHelper {
+public class SqlTemplate extends LottoDBHelper {
     private SQLiteDatabase sqlDb;
 
-    public sqlTemplate(Context context) {
+    public SqlTemplate(Context context) {
         super(context);
         sqlDb = getWritableDatabase();
     }
 
     public void insert(String query) {
         sqlDb.execSQL(query);
+    }
+
+    public long insert(String tableName, ContentValues contentValues) {
+        return sqlDb.insert(tableName, null, contentValues);
     }
 
     public void update(String query) {

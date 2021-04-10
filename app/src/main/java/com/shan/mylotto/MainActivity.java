@@ -42,10 +42,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int SAVED_LOTTO_LIST = 1001;
 
     private LottoService lottoService;
-    private LottoGameService lottoGameService;
 
     private Toast mToast;
-    private LottoGame lottoGame;
+    private List<Lotto> lottoList;
     private EditText round;
     private Button makeOne;
     private Button makeTwo;
@@ -72,33 +71,11 @@ public class MainActivity extends AppCompatActivity {
         eventHandlerInit();
 
         // 회차 정보 넣기
-        this.round.setText(lottoGameService.getLottoRoundByDhlottery());
-
-        /*LottoDBHelper lottoDBHelper = new LottoDBHelper(this);
-        SQLiteDatabase sqlDB = lottoDBHelper.getWritableDatabase();
-        sqlDB.execSQL("INSERT INTO lotto (lotto_game_id, num_one, num_two, num_three, num_four, num_five, num_six, make_date) VALUES(1, 5, 10, 20, 30, 40, 50, '2021-04-10 15:41:00')");
-
-        Cursor cursor = sqlDB.rawQuery("SELECT * FROM lotto", null);
-        if(cursor.moveToFirst()) {
-            do {
-                System.out.println("===============================");
-                System.out.println(cursor.getInt(0));
-                System.out.println(cursor.getInt(1));
-                System.out.println(cursor.getInt(2));
-                System.out.println(cursor.getInt(3));
-                System.out.println(cursor.getInt(4));
-                System.out.println(cursor.getInt(5));
-                System.out.println(cursor.getInt(6));
-                System.out.println(cursor.getInt(7));
-                System.out.println(cursor.getString(8));
-                System.out.println("===============================");
-            } while (cursor.moveToNext());
-        }*/
+        this.round.setText(lottoService.getLottoRoundByDhlottery());
     }
 
     public void init() {
-        this.lottoService = new LottoServiceImpl();
-        this.lottoGameService = new LottoGameServiceImpl(this.lottoService);
+        this.lottoService = new LottoServiceImpl(this);
 
         this.round = findViewById(R.id.round);
         this.makeOne = findViewById(R.id.makeOne);
@@ -135,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 // 이전 로또 지우기
                 disLayout.removeAllViews();
 
-                lottoGame = lottoGameService.makeLottoGame(Integer.parseInt(makeNumber));
-                displayLottos(lottoGame.getLottos());
+                lottoList = lottoService.makeLotto(Integer.parseInt(makeNumber));
+                displayLottos(lottoList);
 
                 showToast(getApplicationContext(),"생성을 완료하였습니다.");
                 saveBtn.setText("저장");
@@ -153,6 +130,10 @@ public class MainActivity extends AppCompatActivity {
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(lottoList != null && lottoList.size() == 0) {
+                    return;
+                }
+
                 if(isSaved) {
                     showToast(getApplicationContext(),"이미 저장을 완료하였습니다.");
                     return;
@@ -164,10 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     round.requestFocus();
                     return;
                 }
-                lottoGame.setRound(Integer.parseInt(roundStr));
 
-                //int result = FileUtil.writeJsonFile(getBaseContext(), lottoGame);
-                int result = lottoGameService.saveFileByLottoGame(getBaseContext(), lottoGame);
+                int result = lottoService.insertLottoList(Integer.parseInt(roundStr), lottoList);
                 if(result == 0) {
                     showToast(getApplicationContext(),"저장을 완료하였습니다.");
                     //saveBtnLayout.setVisibility(View.INVISIBLE);
@@ -182,10 +161,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayLottos(List<Lotto> lottos) {
-        if(lottos != null) {
+        if(lottos != null && lottos.size() > 0) {
             for(int i = 0; i < lottos.size(); i++) {
                 Lotto lotto = lottos.get(i);
-                List<Integer> numbers = lotto.getNumbers();
 
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.CENTER;
@@ -193,23 +171,29 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout lottoLayout = new LinearLayout(this);
                 lottoLayout.setLayoutParams(lp);
                 lottoLayout.setOrientation(LinearLayout.HORIZONTAL);
+                lottoLayout.addView(makeLottoBtn(lotto.getNumOne()));
+                lottoLayout.addView(makeLottoBtn(lotto.getNumTwo()));
+                lottoLayout.addView(makeLottoBtn(lotto.getNumThree()));
+                lottoLayout.addView(makeLottoBtn(lotto.getNumFour()));
+                lottoLayout.addView(makeLottoBtn(lotto.getNumFive()));
+                lottoLayout.addView(makeLottoBtn(lotto.getNumSix()));
 
-                for(int j = 0; j < numbers.size(); j++) {
-                    LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDP(getResources(), 40), CommonUtil.getConvertToDP(getResources(), 40));
-                    buttonLp.setMargins(13, 0, 13, 50);
-
-                    Button button = new Button(this);
-                    button.setLayoutParams(buttonLp);
-                    button.setText(String.valueOf(numbers.get(j)));
-                    button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(numbers.get(j))));
-                    button.setTextColor(Color.WHITE);
-
-                    lottoLayout.addView(button);
-                }
                 this.disLayout.addView(lottoLayout);
             }
             this.saveBtnLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    public Button makeLottoBtn(int lottoNum) {
+        LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDP(getResources(), 40), CommonUtil.getConvertToDP(getResources(), 40));
+        buttonLp.setMargins(13, 0, 13, 50);
+
+        Button button = new Button(this);
+        button.setLayoutParams(buttonLp);
+        button.setText(String.valueOf(lottoNum));
+        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
+        button.setTextColor(Color.WHITE);
+        return button;
     }
 
     @Override
