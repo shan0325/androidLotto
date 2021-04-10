@@ -139,8 +139,8 @@
         <TableLayout
             android:id="@+id/listTableLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:stretchColumns="*">
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1,2,3">
 
         </TableLayout>
     </ScrollView>

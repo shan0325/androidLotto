@@ -218,11 +218,14 @@ public class SavedLottoListActivity extends AppCompatActivity {
             }
             bodyTr.addView(makeTableRowByTextView(dateTime));
 
-            TableRow.LayoutParams delBtnLp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 60), CommonUtil.getConvertToDP(getResources(), 40));
+            TableRow.LayoutParams delBtnLp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 20), CommonUtil.getConvertToDP(getResources(), 20));
+            delBtnLp.gravity = Gravity.CENTER;
+
             Button delBtn = new Button(this);
             delBtn.setLayoutParams(delBtnLp);
             delBtn.setText("삭제");
             delBtn.setTextSize(12);
+            delBtn.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.delete_button));
             delBtn.setHint(String.valueOf(lottoGame.getId()));
             delBtn.setOnClickListener(this.delBtnListener);
             bodyTr.addView(delBtn);
