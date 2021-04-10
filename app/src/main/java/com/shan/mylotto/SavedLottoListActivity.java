@@ -56,11 +56,13 @@ public class SavedLottoListActivity extends AppCompatActivity {
     private Button resultFiveNumber;
     private Button resultSixNumber;
     private Button resultBonusNumber;
+    private LinearLayout roundLayout;
     private Spinner roundSpinner;
 
+    private Integer curRound;
     private List<Integer> roundList;
     private Map<String, Object> resultLottoMap;
-    private List<LottoGame> savedList;
+    private List<LottoGame> roundSavedList;
     private Button.OnClickListener delBtnListener;
 
     @Override
@@ -69,8 +71,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_saved_lotto_list);
 
         init();
+        roundSpinnerInit();
         eventHandlerInit();
-        initRoundSpinner();
     }
 
     @SuppressLint("WrongViewCast")
@@ -89,6 +91,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.resultFiveNumber = findViewById(R.id.resultFiveNumber);
         this.resultSixNumber = findViewById(R.id.resultSixNumber);
         this.resultBonusNumber = findViewById(R.id.resultBonusNumber);
+        this.roundLayout = findViewById(R.id.roundLayout);
         this.roundSpinner = findViewById(R.id.roundsSpinner);
 
         setSupportActionBar(this.myToolbar);
@@ -103,23 +106,26 @@ public class SavedLottoListActivity extends AppCompatActivity {
                 Button btn = (Button) v;
                 String id = btn.getHint().toString();
 
-                if(savedList != null && savedList.size() > 0) {
-                    for (int i = 0; i < savedList.size(); i++) {
-                        if(id.equals(String.valueOf(savedList.get(i).getId()))) {
-                            savedList.remove(savedList.get(i));
-                            FileUtil.writeJsonFile(getBaseContext(), savedList);
-                            initRoundSpinner();
+                if(roundSavedList != null && roundSavedList.size() > 0) {
+                    for (int i = 0; i < roundSavedList.size(); i++) {
+                        if(id.equals(String.valueOf(roundSavedList.get(i).getId()))) {
+                            roundSavedList.remove(roundSavedList.get(i));
+                            FileUtil.writeJsonFile(getBaseContext(), roundSavedList);
+                            break;
                         }
                     }
+                    displaySavedLottoList(curRound);
                 }
             }
         };
 
+        // 회차 셀렉트박스 선택 시
         this.roundSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                resultLottoMap = displayResultLottoNumber(roundList.get(position));
-                displaySavedLottoList(roundList.get(position));
+                curRound = roundList.get(position);
+                resultLottoMap = displayResultLottoNumber(curRound);
+                displaySavedLottoList(curRound);
             }
 
             @Override
@@ -128,16 +134,26 @@ public class SavedLottoListActivity extends AppCompatActivity {
         });
     }
 
-    private void initRoundSpinner() {
+    private void roundSpinnerInit() {
         this.roundList = lottoGameService.findLottoGameRounds(getBaseContext());
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roundList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        this.roundSpinner.setAdapter(adapter);
+
+        if(this.roundList == null || this.roundList.size() == 0) {
+            this.roundLayout.setVisibility(View.INVISIBLE);
+            this.resultText.setText("저장된 내역이 없습니다.");
+            return;
+        }
+
+        ArrayAdapter spinnerAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roundList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.roundSpinner.setAdapter(spinnerAdapter);
+
+        this.roundLayout.setVisibility(View.VISIBLE);
     }
 
     // 당첨결과 로또번호 출력
     private Map<String, Object> displayResultLottoNumber(Integer round) {
         Map<String, Object> resultLottoMap = lottoGameService.getLottoResultByDrwNo(round);
+
         String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue != null && "success".equals(returnValue)) {
             this.resultLayout.setVisibility(View.VISIBLE);
@@ -183,27 +199,27 @@ public class SavedLottoListActivity extends AppCompatActivity {
         headTr.addView(makeTableRowByTextView("삭제"));
         listTableLayout.addView(headTr);
 
-        this.savedList = lottoGameService.findByRound(getBaseContext(), round);
-        if(this.savedList == null || this.savedList.size() == 0) {
+        this.roundSavedList = lottoGameService.findByRound(getBaseContext(), round);
+        if(this.roundSavedList == null || this.roundSavedList.size() == 0) {
             return;
         }
 
-        Collections.sort(this.savedList, new Comparator<LottoGame>() {
+        Collections.sort(this.roundSavedList, new Comparator<LottoGame>() {
             @Override
             public int compare(LottoGame o1, LottoGame o2) {
                 return o2.getMakeDate().compareTo(o1.getMakeDate());
             }
         });
 
-        for(int i = 0; i < this.savedList.size(); i++) {
-            LottoGame lottoGame = this.savedList.get(i);
+        for(int i = 0; i < this.roundSavedList.size(); i++) {
+            LottoGame lottoGame = this.roundSavedList.get(i);
             List<Lotto> lottos = lottoGame.getLottos();
 
             TableRow bodyTr = new TableRow(this);
             bodyTr.setGravity(Gravity.CENTER_VERTICAL);
             bodyTr.setBackgroundResource(R.drawable.border);
             bodyTr.setPadding(0,20,0,20);
-            bodyTr.addView(makeTableRowByTextView(String.valueOf(this.savedList.size() - i)));
+            bodyTr.addView(makeTableRowByTextView(String.valueOf(this.roundSavedList.size() - i)));
 
             TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {

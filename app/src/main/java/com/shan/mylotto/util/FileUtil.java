@@ -47,15 +47,11 @@ public class FileUtil {
                 list = objectMapper.readValue(jsonStr.toString(), objectMapper.getTypeFactory().constructCollectionType(List.class, LottoGame.class));
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if(br != null) {
-                try { br.close(); } catch (IOException e) { e.printStackTrace(); }
+                try { br.close(); } catch (Exception e) { e.printStackTrace(); }
             }
         }
 
@@ -78,7 +74,7 @@ public class FileUtil {
             e.printStackTrace();
         } finally {
             if(bos != null) {
-                try { bos.close(); } catch (IOException e) { e.printStackTrace(); }
+                try { bos.close(); } catch (Exception e) { e.printStackTrace(); }
             }
         }
 

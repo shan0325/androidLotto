@@ -6,15 +6,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +33,7 @@ import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoGameServiceImpl;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
 import com.shan.mylotto.util.CommonUtil;
+import com.shan.mylotto.db.LottoDBHelper;
 
 import java.util.List;
 
@@ -74,6 +73,27 @@ public class MainActivity extends AppCompatActivity {
 
         // 회차 정보 넣기
         this.round.setText(lottoGameService.getLottoRoundByDhlottery());
+
+        /*LottoDBHelper lottoDBHelper = new LottoDBHelper(this);
+        SQLiteDatabase sqlDB = lottoDBHelper.getWritableDatabase();
+        sqlDB.execSQL("INSERT INTO lotto (lotto_game_id, num_one, num_two, num_three, num_four, num_five, num_six, make_date) VALUES(1, 5, 10, 20, 30, 40, 50, '2021-04-10 15:41:00')");
+
+        Cursor cursor = sqlDB.rawQuery("SELECT * FROM lotto", null);
+        if(cursor.moveToFirst()) {
+            do {
+                System.out.println("===============================");
+                System.out.println(cursor.getInt(0));
+                System.out.println(cursor.getInt(1));
+                System.out.println(cursor.getInt(2));
+                System.out.println(cursor.getInt(3));
+                System.out.println(cursor.getInt(4));
+                System.out.println(cursor.getInt(5));
+                System.out.println(cursor.getInt(6));
+                System.out.println(cursor.getInt(7));
+                System.out.println(cursor.getString(8));
+                System.out.println("===============================");
+            } while (cursor.moveToNext());
+        }*/
     }
 
     public void init() {
