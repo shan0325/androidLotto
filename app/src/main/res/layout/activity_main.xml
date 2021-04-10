@@ -138,7 +138,9 @@
     <ScrollView
         android:id="@+id/disScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
 
         <LinearLayout
             android:id="@+id/disLayout"
@@ -152,22 +154,12 @@
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar android:id="@+id/loading_spinner"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        />
-
     <LinearLayout
         android:id="@+id/saveBtnLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:visibility="invisible">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
 
         <Button
             android:id="@+id/saveBtn"
@@ -178,5 +170,14 @@
             android:textColor="@color/colorWhite"/>
 
     </LinearLayout>
+
+    <!--<ProgressBar android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        />-->
 
 </LinearLayout>

@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView message;
     private Toolbar myToolbar;
     private View disScrollView;
-    private View loadingView;
 
     private boolean isSaved;
 
@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
         this.message = findViewById(R.id.message);
         this.myToolbar = findViewById(R.id.myToolbar);
         this.disScrollView = findViewById(R.id.disScrollView);
-        this.loadingView = findViewById(R.id.loading_spinner);
         setSupportActionBar(this.myToolbar);
 
         // 포커스
