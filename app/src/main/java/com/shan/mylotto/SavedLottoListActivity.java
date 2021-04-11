@@ -192,7 +192,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
             TableRow bodyTr = new TableRow(this);
             bodyTr.setGravity(Gravity.CENTER_VERTICAL);
             bodyTr.setBackgroundResource(R.drawable.border);
-            bodyTr.setPadding(0,20,0,20);
+            bodyTr.setPadding(0,15,0,15);
             bodyTr.addView(makeTableRowByTextView(String.valueOf(this.roundSavedList.size() - i)));
 
             TableLayout lottoTl = new TableLayout(this);
@@ -218,13 +218,14 @@ public class SavedLottoListActivity extends AppCompatActivity {
             }
             bodyTr.addView(makeTableRowByTextView(dateTime));
 
-            TableRow.LayoutParams delBtnLp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 20), CommonUtil.getConvertToDP(getResources(), 20));
+            TableRow.LayoutParams delBtnLp = new TableRow.LayoutParams(CommonUtil.getConvertToDeviceDP(getResources(), 20), CommonUtil.getConvertToDeviceDP(getResources(), 20));
             delBtnLp.gravity = Gravity.CENTER;
 
             Button delBtn = new Button(this);
             delBtn.setLayoutParams(delBtnLp);
             delBtn.setText("삭제");
             delBtn.setTextSize(12);
+            delBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextBasic));
             delBtn.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.delete_button));
             delBtn.setHint(String.valueOf(lottoGame.getId()));
             delBtn.setOnClickListener(this.delBtnListener);
@@ -235,12 +236,12 @@ public class SavedLottoListActivity extends AppCompatActivity {
     }
 
     public Button makeLottoBtn(int lottoNum) {
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDP(getResources(), 22), CommonUtil.getConvertToDP(getResources(), 22));
+        TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDeviceDP(getResources(), 22), CommonUtil.getConvertToDeviceDP(getResources(), 22));
         lp.setMargins(5, 5, 5, 5);
 
         Button button = new Button(this);
         button.setLayoutParams(lp);
-        button.setTextSize(12);
+        button.setTextSize(11);
         button.setText(String.valueOf(lottoNum));
         if(checkPrizeLottoNumber(this.resultLottoMap, lottoNum) == 1) { // 번호가 맞을경우
             button.setTextColor(Color.WHITE);
@@ -249,6 +250,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
             button.setTextColor(Color.BLACK);
             button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
         } else {
+            button.setTextColor(ContextCompat.getColor(this, R.color.colorTextBasic));
             button.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.lotto_default));
         }
         return button;

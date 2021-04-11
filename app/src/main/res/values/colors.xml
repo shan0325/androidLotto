@@ -11,5 +11,6 @@
     <color name="colorLotto_3">#F06292</color>
     <color name="colorLotto_4">#939292</color>
     <color name="colorLotto_5">#81C784</color>
+    <color name="colorTextBasic">#656565</color>
 
 </resources>

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -123,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(lottoList != null && lottoList.size() == 0) {
+                if(lottoList == null || lottoList.size() == 0) {
+                    showToast(getApplicationContext(),"로또를 생성해주세요");
                     return;
                 }
-
                 if(isSaved) {
                     showToast(getApplicationContext(),"이미 저장을 완료하였습니다.");
                     return;
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String roundStr = round.getText().toString().trim();
                 if("".equals(roundStr)) {
-                    showToast(getApplicationContext(),"회차를 입력해주세요.");
+                    showToast(getApplicationContext(),"회차를 입력해주세요");
                     round.requestFocus();
                     return;
                 }
@@ -142,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 int result = lottoService.insertLottoList(Integer.parseInt(roundStr), lottoList);
                 if(result == 0) {
                     showToast(getApplicationContext(),"저장을 완료하였습니다.");
-                    //saveBtnLayout.setVisibility(View.INVISIBLE);
                     saveBtn.setText("저장 완료");
                     isSaved = true;
                 } else {
@@ -173,13 +173,16 @@ public class MainActivity extends AppCompatActivity {
 
                 this.disLayout.addView(lottoLayout);
             }
-            this.saveBtnLayout.setVisibility(View.VISIBLE);
         }
     }
 
     public Button makeLottoBtn(int lottoNum) {
-        LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDP(getResources(), 40), CommonUtil.getConvertToDP(getResources(), 40));
-        buttonLp.setMargins(13, 0, 13, 50);
+        int left = CommonUtil.getConvertToDeviceDP(getResources(), 3);
+        int right = CommonUtil.getConvertToDeviceDP(getResources(), 3);
+        int bottom = CommonUtil.getConvertToDeviceDP(getResources(), 15);
+
+        LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDeviceDP(getResources(), 40), CommonUtil.getConvertToDeviceDP(getResources(), 40));
+        buttonLp.setMargins(left, 0, right, bottom);
 
         Button button = new Button(this);
         button.setLayoutParams(buttonLp);
