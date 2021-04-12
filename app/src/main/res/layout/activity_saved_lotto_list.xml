@@ -18,8 +18,8 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@drawable/logo"
             android:layout_gravity="center"
             android:layout_marginRight="5dp"
@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="로또 생성기"
+            android:text="로또 추첨기"
             android:layout_gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="18sp" />
