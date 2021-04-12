@@ -15,6 +15,7 @@ import com.shan.mylotto.lotto.service.dao.LottoDAO;
 import com.shan.mylotto.lotto.service.dao.LottoGameDAO;
 import com.shan.mylotto.util.DateUtil;
 import com.shan.mylotto.util.JsoupTaskUtil;
+import com.shan.mylotto.util.NetworkStatusUtil;
 import com.shan.mylotto.util.OpenApiUtil;
 
 import org.jsoup.select.Elements;
@@ -125,12 +126,17 @@ public class LottoServiceImpl implements LottoService {
     }
 
     /**
-     * 이번주 로또 회차번호 가져오기
+     * 이번주 로또 회차번호 구하기
      * @return
      */
     @Override
-    public String getLottoRoundByDhlottery() {
+    public String getLottoRoundByDhlottery(Context context) {
         String result = "";
+
+        // 인터넷 연결 확인
+        if(NetworkStatusUtil.getConnectivityStatus(context) == NetworkStatusUtil.TYPE_NOT_CONNECTED) {
+            return result;
+        }
 
         JsoupTaskUtil jsoupTaskUtil = new JsoupTaskUtil();
         try {
@@ -152,12 +158,17 @@ public class LottoServiceImpl implements LottoService {
      * @return
      */
     @Override
-    public Map<String, Object> getLottoResultByDrwNo(int drwNo) {
+    public Map<String, Object> getLottoResultByDrwNo(Context context, int drwNo) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // 인터넷 연결 확인
+        if(NetworkStatusUtil.getConnectivityStatus(context) == NetworkStatusUtil.TYPE_NOT_CONNECTED) {
+            return resultMap;
+        }
+
         // 로또 결과 url
         String urlStr = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=" + drwNo;
-        System.out.println("===============================");
-        System.out.println(urlStr);
-        System.out.println("===============================");
+        Log.i("url", urlStr);
 
         AsyncTask<String, Integer, Map<String, Object>> lottoResultApi = new AsyncTask<String, Integer, Map<String, Object>>() {
             @Override
@@ -176,7 +187,6 @@ public class LottoServiceImpl implements LottoService {
             }
         };
 
-        Map<String, Object> resultMap = new HashMap<>();
         try {
             resultMap = lottoResultApi.execute(urlStr).get();
         } catch (ExecutionException e) {

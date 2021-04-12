@@ -1,5 +1,7 @@
 package com.shan.mylotto.util;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -30,9 +32,6 @@ public class OpenApiUtil {
                     while ((line = reader.readLine()) != null) {
                         resultSb.append(line);
                     }
-                    System.out.println("==========================");
-                    System.out.println(resultSb.toString());
-                    System.out.println("==========================");
                 }
             }
         } catch (Exception e) {
@@ -46,6 +45,8 @@ public class OpenApiUtil {
                 }
             }
         }
+
+        Log.i("resultAPI", resultSb.toString());
         return resultSb.toString();
     }
 }

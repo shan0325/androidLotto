@@ -1,5 +1,7 @@
 package com.shan.mylotto.lotto.service;
 
+import android.content.Context;
+
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.domain.LottoGame;
 
@@ -16,9 +18,9 @@ public interface LottoService {
 
     public int insertLottoList(int round, List<Lotto> lottoList);
 
-    public String getLottoRoundByDhlottery();
+    public String getLottoRoundByDhlottery(Context context);
 
-    public Map<String, Object> getLottoResultByDrwNo(int drwNo);
+    public Map<String, Object> getLottoResultByDrwNo(Context context, int drwNo);
 
     public List<Integer> findLottoRounds();
 

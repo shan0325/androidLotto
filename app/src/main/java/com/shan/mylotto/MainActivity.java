@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         eventHandlerInit();
 
         // 회차 정보 넣기
-        this.round.setText(lottoService.getLottoRoundByDhlottery());
+        this.round.setText(lottoService.getLottoRoundByDhlottery(getApplicationContext()));
     }
 
     public void init() {

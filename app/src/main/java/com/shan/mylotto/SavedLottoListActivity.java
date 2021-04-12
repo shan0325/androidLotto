@@ -133,7 +133,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
     // 당첨결과 로또번호 출력
     private Map<String, Object> displayResultLottoNumber(Integer round) {
-        Map<String, Object> resultLottoMap = lottoService.getLottoResultByDrwNo(round);
+        Map<String, Object> resultLottoMap = lottoService.getLottoResultByDrwNo(getApplicationContext(), round);
 
         String returnValue = (String) resultLottoMap.get("returnValue");
         if(returnValue != null && "success".equals(returnValue)) {
