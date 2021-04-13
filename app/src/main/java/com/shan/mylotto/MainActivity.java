@@ -85,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
         this.message = findViewById(R.id.message);
         this.myToolbar = findViewById(R.id.myToolbar);
         this.disScrollView = findViewById(R.id.disScrollView);
+
         setSupportActionBar(this.myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // 포커스
         //makeLottosLength.requestFocus();

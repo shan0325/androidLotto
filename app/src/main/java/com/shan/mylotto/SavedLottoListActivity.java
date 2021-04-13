@@ -83,6 +83,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.roundSpinner = findViewById(R.id.roundsSpinner);
 
         setSupportActionBar(this.myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼
     }
 

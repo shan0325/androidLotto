@@ -7,33 +7,9 @@
     android:orientation="vertical"
     tools:context=".SavedLottoListActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/myToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/toolbarBackground"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/logo"
-            android:layout_gravity="center"
-            android:layout_marginRight="5dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="로또 추첨기"
-            android:layout_gravity="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="18sp" />
-
-    </androidx.appcompat.widget.Toolbar>
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/myToolbar" />
 
     <LinearLayout
         android:id="@+id/roundLayout"
