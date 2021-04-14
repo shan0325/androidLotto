@@ -20,6 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.domain.LottoGame;
 import com.shan.mylotto.lotto.service.LottoService;
@@ -47,6 +52,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
     private Button resultBonusNumber;
     private LinearLayout roundLayout;
     private Spinner roundSpinner;
+    private AdView mAdView;
 
     private Integer curRound;
     private List<Integer> roundList;
@@ -62,6 +68,16 @@ public class SavedLottoListActivity extends AppCompatActivity {
         init();
         roundSpinnerInit();
         eventHandlerInit();
+
+        // AdMob 초기화
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @SuppressLint("WrongViewCast")
@@ -115,7 +131,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         });
     }
 
-    // 회자 스피너 셋팅
+    // 회차 스피너 셋팅
     private void roundSpinnerInit() {
         this.roundList = lottoService.findLottoRounds();
 

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -26,6 +27,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
@@ -54,9 +60,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView message;
     private Toolbar myToolbar;
     private View disScrollView;
+    private AdView mAdView;
 
     private boolean isSaved;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +72,16 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         eventHandlerInit();
+
+        // AdMob 초기화
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // 회차 정보 넣기
         this.round.setText(lottoService.getLottoRoundByDhlottery(getApplicationContext()));
@@ -189,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         Button button = new Button(this);
         button.setLayoutParams(buttonLp);
         button.setText(String.valueOf(lottoNum));
-        button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
+        button.setBackground(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
         button.setTextColor(Color.WHITE);
         return button;
     }
@@ -240,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mToast.setText(message);
         }
+
+        mToast.setGravity(Gravity.BOTTOM, 0, CommonUtil.getConvertToDeviceDP(getResources(), 120));
         mToast.show();
     }
 }

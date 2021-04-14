@@ -127,17 +127,25 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:gravity="center"
+        android:fillViewport="true"
+        android:layout_marginTop="0dp"
         >
-
         <LinearLayout
-            android:id="@+id/disLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="15dp"
+            android:gravity="center"
             >
+            <LinearLayout
+                android:id="@+id/disLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                >
 
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -151,13 +159,15 @@
         <Button
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:text="저장"
-            android:textSize="16dp"
+            android:textSize="17dp"
             android:background="@color/colorPrimary"
             android:textColor="@color/colorWhite"/>
 
     </LinearLayout>
+
+    <include layout="@layout/ad_mob_banner" />
 
     <!--<ProgressBar android:id="@+id/loading_spinner"
         style="?android:attr/progressBarStyle"
