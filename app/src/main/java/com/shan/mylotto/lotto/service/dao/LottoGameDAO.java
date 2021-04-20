@@ -41,7 +41,7 @@ public class LottoGameDAO {
     }
 
     public List<Integer> findLottoRounds() {
-        return sqlTemplate.select("SELECT DISTINCT round FROM lotto_game", new RowMapper<Integer>() {
+        return sqlTemplate.select("SELECT DISTINCT round FROM lotto_game ORDER BY round DESC", new RowMapper<Integer>() {
             @Override
             public Integer mapRow(Cursor cursor) {
                 return cursor.getInt(0);

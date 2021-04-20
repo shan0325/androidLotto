@@ -179,11 +179,19 @@ public class MainActivity extends AppCompatActivity {
                 Lotto lotto = lottos.get(i);
 
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.setMargins(0, 0, 0, CommonUtil.getConvertToDeviceDP(getResources(), 5));
                 lp.gravity = Gravity.CENTER;
+
+                int left = CommonUtil.getConvertToDeviceDP(getResources(), 10);
+                int top  = CommonUtil.getConvertToDeviceDP(getResources(), 7);
+                int right = CommonUtil.getConvertToDeviceDP(getResources(), 10);
+                int bottom = CommonUtil.getConvertToDeviceDP(getResources(), 7);
 
                 LinearLayout lottoLayout = new LinearLayout(this);
                 lottoLayout.setLayoutParams(lp);
+                lottoLayout.setPadding(left, top, right, bottom);
                 lottoLayout.setOrientation(LinearLayout.HORIZONTAL);
+                //lottoLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.layout_border));
                 lottoLayout.addView(makeLottoBtn(lotto.getNumOne()));
                 lottoLayout.addView(makeLottoBtn(lotto.getNumTwo()));
                 lottoLayout.addView(makeLottoBtn(lotto.getNumThree()));
@@ -199,10 +207,9 @@ public class MainActivity extends AppCompatActivity {
     public Button makeLottoBtn(int lottoNum) {
         int left = CommonUtil.getConvertToDeviceDP(getResources(), 3);
         int right = CommonUtil.getConvertToDeviceDP(getResources(), 3);
-        int bottom = CommonUtil.getConvertToDeviceDP(getResources(), 15);
 
         LinearLayout.LayoutParams buttonLp = new LinearLayout.LayoutParams(CommonUtil.getConvertToDeviceDP(getResources(), 40), CommonUtil.getConvertToDeviceDP(getResources(), 40));
-        buttonLp.setMargins(left, 0, right, bottom);
+        buttonLp.setMargins(left, 0, right, 0);
 
         Button button = new Button(this);
         button.setLayoutParams(buttonLp);
