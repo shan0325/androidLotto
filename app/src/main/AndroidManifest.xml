@@ -23,6 +23,7 @@
         <activity android:name=".SavedLottoListActivity" />
 
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- 운영 AdMob app ID: ca-app-pub-4660704022375249~3853110139 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4660704022375249~3853110139"/>
