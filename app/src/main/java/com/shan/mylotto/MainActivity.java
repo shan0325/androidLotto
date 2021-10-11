@@ -1,6 +1,7 @@
 package com.shan.mylotto;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -11,7 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,6 +35,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.shan.mylotto.lotto.domain.Lotto;
 import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.impl.LottoServiceImpl;
@@ -61,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar myToolbar;
     private View disScrollView;
     private AdView mAdView;
+
+    // qr code scanner object
+    private IntentIntegrator qrScan;
 
     private boolean isSaved;
 
@@ -103,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
         this.message = findViewById(R.id.message);
         this.myToolbar = findViewById(R.id.myToolbar);
         this.disScrollView = findViewById(R.id.disScrollView);
+
+        this.qrScan = new IntentIntegrator(this);
+        this.qrScan.setOrientationLocked(false);
+        this.qrScan.setBeepEnabled(false);
+        this.qrScan.setBarcodeImageEnabled(true);
 
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -237,8 +250,33 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), SavedLottoListActivity.class);
                 startActivityForResult(intent, SAVED_LOTTO_LIST); // 액티비티 띄우기
                 break;
+            case R.id.qrScan :
+                qrScan.setPrompt("QR코드를 인식해주세요.");
+                qrScan.initiateScan();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // QR코드 스캔 결과
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(intentResult != null) {
+            if(intentResult.getContents() == null) {
+                 showToast(getApplicationContext(), "결과를 찾을 수 없습니다.");
+            } else {
+                String contents = intentResult.getContents();
+                if(contents.startsWith("http")) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentResult.getContents())));
+                } else {
+                    showToast(getApplicationContext(), "URL 정보가 없는 QR코드 입니다.");
+                    // showToast(getApplicationContext(), intentResult.getContents());
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     // 다른곳 터치 시 키보드 내리기
