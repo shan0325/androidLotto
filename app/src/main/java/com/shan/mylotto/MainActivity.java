@@ -2,6 +2,7 @@ package com.shan.mylotto;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -9,9 +10,11 @@ import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,6 +28,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,6 +51,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final int SAVED_LOTTO_LIST = 1001;
+    public static final int QR_ACTIVITY = 1002;
 
     private LottoService lottoService;
 
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar myToolbar;
     private View disScrollView;
     private AdView mAdView;
+    private ImageView qrScanImg;
 
     // qr code scanner object
     private IntentIntegrator qrScan;
@@ -111,11 +117,13 @@ public class MainActivity extends AppCompatActivity {
         this.message = findViewById(R.id.message);
         this.myToolbar = findViewById(R.id.myToolbar);
         this.disScrollView = findViewById(R.id.disScrollView);
+        this.qrScanImg = findViewById(R.id.qrScanImg);
 
         this.qrScan = new IntentIntegrator(this);
         this.qrScan.setOrientationLocked(false);
         this.qrScan.setBeepEnabled(false);
-        this.qrScan.setBarcodeImageEnabled(true);
+        this.qrScan.setCaptureActivity(QrReaderActivity.class);
+        this.qrScan.setPrompt("QR코드를 인식해주세요.");
 
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -129,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void eventHandlerInit() {
-        // 숫자 버튼 클릭 시
+        // 숫자 버튼 터치 시
         Button.OnClickListener makeBtnListener = new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         this.makeFour.setOnClickListener(makeBtnListener);
         this.makeFive.setOnClickListener(makeBtnListener);
 
-        // 저장하기 버튼 클릭 시
+        // 저장하기 버튼 터치 시
         this.saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +190,14 @@ public class MainActivity extends AppCompatActivity {
                     showToast(getApplicationContext(),"저장을 실패하였습니다.");
                     saveBtn.setText("저장 실패");
                 }
+            }
+        });
+
+        // qr 스캔 이미지 터치 시
+        this.qrScanImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qrScan.initiateScan();
             }
         });
     }
@@ -251,8 +267,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, SAVED_LOTTO_LIST); // 액티비티 띄우기
                 break;
             case R.id.qrScan :
-                qrScan.setPrompt("QR코드를 인식해주세요.");
                 qrScan.initiateScan();
+//                Intent qrIntent = new Intent(getApplicationContext(), QrReaderActivity.class);
+//                startActivityForResult(qrIntent, QR_ACTIVITY);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -266,11 +283,24 @@ public class MainActivity extends AppCompatActivity {
             if(intentResult.getContents() == null) {
                  showToast(getApplicationContext(), "결과를 찾을 수 없습니다.");
             } else {
-                String contents = intentResult.getContents();
+                final String contents = intentResult.getContents();
+                // ((QrReaderActivity) QrReaderActivity.mContext).showContents(contents);
+
                 if(contents.startsWith("http")) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentResult.getContents())));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(contents)));
+
+                    /*new AlertDialog.Builder(this)
+                                    .setTitle(R.string.app_name)
+                                    .setMessage(contents)
+                                    .setPositiveButton("이동", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(contents)));
+                                            dialog.dismiss();
+                                        }
+                                    }).show();*/
                 } else {
-                    showToast(getApplicationContext(), "URL 정보가 없는 QR코드 입니다.");
+                    showToast(getApplicationContext(), "URL 정보를 확인할 수 없습니다.");
                     // showToast(getApplicationContext(), intentResult.getContents());
                 }
             }
@@ -298,13 +328,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showToast(Context context, String message) {
-        if(mToast == null) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM, 0, CommonUtil.getConvertToDeviceDP(getResources(), 120));
+        toast.show();
+
+        /*if(mToast == null) {
             mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         } else {
             mToast.setText(message);
         }
 
         mToast.setGravity(Gravity.BOTTOM, 0, CommonUtil.getConvertToDeviceDP(getResources(), 120));
-        mToast.show();
+        mToast.show();*/
     }
 }

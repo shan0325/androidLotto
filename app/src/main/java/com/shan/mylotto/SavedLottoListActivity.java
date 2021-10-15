@@ -98,6 +98,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.roundLayout = findViewById(R.id.roundLayout);
         this.roundSpinner = findViewById(R.id.roundsSpinner);
 
+        findViewById(R.id.qrScanImgLayout).setVisibility(View.GONE);
+
         setSupportActionBar(this.myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 뒤로가기 버튼

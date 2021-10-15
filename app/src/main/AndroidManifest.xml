@@ -13,6 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_lotto_logo_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <activity android:name=".MainActivity">
@@ -31,6 +32,8 @@
             tools:replace="android:screenOrientation"
             android:stateNotNeeded="true">
         </activity>
+
+        <activity android:name=".QrReaderActivity" />
 
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <!-- 운영 AdMob app ID: ca-app-pub-4660704022375249~3853110139 -->
