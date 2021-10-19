@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="toolbarBackground">#0c1319</color>
+    <color name="roundBackground">#0c1319</color>
     <color name="colorPrimary">#1d293a</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>

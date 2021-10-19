@@ -5,7 +5,7 @@
         android:title="저장내역보기" />
     <item
         android:id="@+id/qrScan"
-        android:title="QR코드 당첨확인" />
+        android:title="QR코드로 내 번호 불러오기" />
     <item
         android:id="@+id/logout"
         android:title="종료" />

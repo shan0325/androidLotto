@@ -98,6 +98,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
         this.roundLayout = findViewById(R.id.roundLayout);
         this.roundSpinner = findViewById(R.id.roundsSpinner);
 
+        // QR 스캔 이미지 없애기
         findViewById(R.id.qrScanImgLayout).setVisibility(View.GONE);
 
         setSupportActionBar(this.myToolbar);

@@ -13,6 +13,7 @@ import com.shan.mylotto.lotto.domain.LottoGame;
 import com.shan.mylotto.lotto.service.LottoService;
 import com.shan.mylotto.lotto.service.dao.LottoDAO;
 import com.shan.mylotto.lotto.service.dao.LottoGameDAO;
+import com.shan.mylotto.util.CommonUtil;
 import com.shan.mylotto.util.DateUtil;
 import com.shan.mylotto.util.JsoupTaskUtil;
 import com.shan.mylotto.util.NetworkStatusUtil;

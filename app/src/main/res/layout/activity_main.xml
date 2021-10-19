@@ -17,8 +17,8 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:orientation="vertical"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="25dp"
+        android:paddingBottom="25dp"
         >
         <LinearLayout
             android:layout_width="wrap_content"
@@ -99,29 +99,34 @@
         android:id="@+id/roundLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="12dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@color/colorPrimary"
+        android:background="@color/roundBackground"
         >
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:paddingRight="20dp"
             android:textColor="@color/colorWhite"
-            android:text="회차" />
+            android:text="제" />
 
         <EditText
             android:id="@+id/round"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
             android:background="@drawable/edittext_round2"
             android:gravity="center"
             android:inputType="number"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:text="회" />
     </LinearLayout>
 
     <ScrollView

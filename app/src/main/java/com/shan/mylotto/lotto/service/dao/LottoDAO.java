@@ -53,7 +53,7 @@ public class LottoDAO {
     }
 
     public List<Lotto> findSavedLottoByLottoGameId(int lottoGameId) {
-        return sqlTemplate.select("SELECT id, lotto_game_id, round, num_one, num_two, num_three, num_four, num_five, num_six, make_date, reg_date FROM lotto WHERE lotto_game_id = " + lottoGameId + " ORDER BY id DESC", new RowMapper<Lotto>() {
+        return sqlTemplate.select("SELECT id, lotto_game_id, round, num_one, num_two, num_three, num_four, num_five, num_six, make_date, reg_date FROM lotto WHERE lotto_game_id = " + lottoGameId, new RowMapper<Lotto>() {
             @Override
             public Lotto mapRow(Cursor cursor) {
                 Lotto lotto = new Lotto();
