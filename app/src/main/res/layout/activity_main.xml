@@ -103,7 +103,7 @@
         android:paddingBottom="12dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="@color/roundBackground"
+        android:background="#2B2B2B"
         >
         <TextView
             android:id="@+id/textView3"

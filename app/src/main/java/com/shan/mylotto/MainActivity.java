@@ -104,13 +104,13 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 첫 인트로 페이지 시작
+        //Intent intent = new Intent(this, LoadingActivity.class);
+        //startActivity(intent);
+        // 첫 인트로 페이지 끝
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // 첫 인트로 페이지 시작
-        Intent intent = new Intent(this, LoadingActivity.class);
-        startActivity(intent);
-        // 첫 인트로 페이지 끝
 
         init();
         eventHandlerInit();
@@ -190,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 disLayout.removeAllViews();
                 disLayout.setVisibility(View.INVISIBLE);
 
-                displayLottos(lottoService.makeLotto(Integer.parseInt(makeNumber)));
+                lottoList = lottoService.makeLotto(Integer.parseInt(makeNumber));
+                displayLottos(lottoList);
 
                 // 회차 정보 넣기
                 round.setText(thisWeekRound);
