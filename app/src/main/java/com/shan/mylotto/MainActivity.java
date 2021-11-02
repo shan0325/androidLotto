@@ -2,12 +2,14 @@ package com.shan.mylotto;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +20,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -48,6 +51,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.shan.mylotto.common.ProgressDialog;
@@ -133,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
     public void init() {
         this.lottoService = new LottoServiceImpl(this);
 
-        this.mToast = Toast.makeText(this, "null", Toast.LENGTH_SHORT);
+        /*this.mToast = Toast.makeText(this, "null", Toast.LENGTH_SHORT);
         ViewGroup group = (ViewGroup) mToast.getView();
         TextView msgTextView = (TextView) group.getChildAt(0);
-        msgTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        msgTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);*/
 
         this.round = findViewById(R.id.round);
         this.makeOne = findViewById(R.id.makeOne);
@@ -312,6 +316,8 @@ public class MainActivity extends AppCompatActivity {
         button.setText(String.valueOf(lottoNum));
         button.setBackground(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
         button.setTextColor(Color.WHITE);
+        button.setStateListAnimator(null);
+
         return button;
     }
 
@@ -491,8 +497,10 @@ public class MainActivity extends AppCompatActivity {
         msgTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         toast.show();*/
 
-        mToast.setText(message);
-        mToast.setGravity(Gravity.BOTTOM, 0, CommonUtil.getConvertToDeviceDP(getResources(), 120));
-        mToast.show();
+        /*Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM, 0, CommonUtil.getConvertToDeviceDP(getResources(), 520));
+        toast.show();*/
+
+        Snackbar.make(this.disScrollView, message, Snackbar.LENGTH_SHORT).show();
     }
 }

@@ -1,5 +1,6 @@
 package com.shan.mylotto.lotto.domain;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,10 @@ public class Lotto {
 
     public void setRegDate(String regDate) {
         this.regDate = regDate;
+    }
+
+    public List<Integer> getNumList() {
+        return Arrays.asList(numOne, numTwo, numThree, numFour, numFive, numSix);
     }
 
     @Override

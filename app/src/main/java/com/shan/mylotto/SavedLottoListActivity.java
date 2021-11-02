@@ -218,21 +218,32 @@ public class SavedLottoListActivity extends AppCompatActivity {
             TableLayout lottoTl = new TableLayout(this);
             for(int j = 0; j < lottos.size(); j++) {
                 Lotto lotto = lottos.get(j);
+
                 TableRow lottoTr = new TableRow(this);
+                lottoTr.setPadding(10, 7, 10, 7);
                 lottoTr.setGravity(Gravity.CENTER);
-                lottoTr.addView(makeLottoBtn(lotto.getNumOne()));
-                lottoTr.addView(makeLottoBtn(lotto.getNumTwo()));
-                lottoTr.addView(makeLottoBtn(lotto.getNumThree()));
-                lottoTr.addView(makeLottoBtn(lotto.getNumFour()));
-                lottoTr.addView(makeLottoBtn(lotto.getNumFive()));
-                lottoTr.addView(makeLottoBtn(lotto.getNumSix()));
+
+                // 등수
+                TextView rankingView = makeTableRowByTextView(getPrizeRankingStr(getPrizeRanking(this.resultLottoMap, lotto)));
+                rankingView.setPadding(0, 0, 20, 0);
+                if(!"".equals(rankingView.getText()) && !"낙첨".equals(rankingView.getText())) {
+                    rankingView.setTextColor(ContextCompat.getColor(this, R.color.colorLotto_3));
+                }
+
+                lottoTr.addView(rankingView);
+                lottoTr.addView(makeLottoBtn(lotto.getNumOne(), lotto));
+                lottoTr.addView(makeLottoBtn(lotto.getNumTwo(), lotto));
+                lottoTr.addView(makeLottoBtn(lotto.getNumThree(), lotto));
+                lottoTr.addView(makeLottoBtn(lotto.getNumFour(), lotto));
+                lottoTr.addView(makeLottoBtn(lotto.getNumFive(), lotto));
+                lottoTr.addView(makeLottoBtn(lotto.getNumSix(), lotto));
                 lottoTl.addView(lottoTr);
             }
             bodyTr.addView(lottoTl);
 
             String dateTime = "";
             if(lottoGame.getRegDate() != null && lottoGame.getRegDate().length() == 19) {
-                String date = lottoGame.getRegDate().substring(0, 10);
+                String date = lottoGame.getRegDate().substring(2, 10);
                 String time = lottoGame.getRegDate().substring(11);
                 dateTime = date + "\n" + time;
             }
@@ -255,7 +266,71 @@ public class SavedLottoListActivity extends AppCompatActivity {
         }
     }
 
-    public Button makeLottoBtn(int lottoNum) {
+    public String getPrizeRankingStr(int ranking) {
+        String result = "";
+        if(ranking == -1) {
+            result = "";
+        } else if(ranking == 0) {
+            result = "낙첨";
+        } else {
+            result = ranking + "등";
+        }
+        return result;
+    }
+
+    // 당첨 등수 확인
+    // 보너스 번호는 2등과 3등을 구분짓는 번호
+    // 5개가 당첨되고 보너스번호도 맞았다면 2등, 5개만 당첨받았으면 3등
+    public int getPrizeRanking(Map<String, Object> resultLottoMap, Lotto lotto) {
+        int result = -1;
+        if(resultLottoMap == null) {
+            return result;
+        }
+
+        String returnValue = (String) resultLottoMap.get("returnValue");
+        if(returnValue == null || !"success".equals(returnValue)) {
+            return result;
+        }
+
+        int rightCount = 0;
+
+        int drwtNo1 = (int) resultLottoMap.get("drwtNo1");
+        int drwtNo2 = (int) resultLottoMap.get("drwtNo2");
+        int drwtNo3 = (int) resultLottoMap.get("drwtNo3");
+        int drwtNo4 = (int) resultLottoMap.get("drwtNo4");
+        int drwtNo5 = (int) resultLottoMap.get("drwtNo5");
+        int drwtNo6 = (int) resultLottoMap.get("drwtNo6");
+        int bnusNo = (int) resultLottoMap.get("bnusNo");
+
+        List<Integer> myLotto = lotto.getNumList();
+        if(myLotto.contains(drwtNo1)) rightCount++;
+        if(myLotto.contains(drwtNo2)) rightCount++;
+        if(myLotto.contains(drwtNo3)) rightCount++;
+        if(myLotto.contains(drwtNo4)) rightCount++;
+        if(myLotto.contains(drwtNo5)) rightCount++;
+        if(myLotto.contains(drwtNo6)) rightCount++;
+
+        if(rightCount == 6) {
+            result = 1;
+        } else if(rightCount == 5) {
+            if(myLotto.contains(bnusNo)) rightCount++;
+            if(rightCount == 6) {
+                result = 2;
+            } else {
+                result = 3;
+            }
+        } else if(rightCount == 4) {
+            result = 4;
+        } else if(rightCount == 3) {
+            result =5;
+        } else {
+            result = 0;
+        }
+
+        return result;
+    }
+
+    public Button makeLottoBtn(int lottoNum, Lotto lotto) {
         TableRow.LayoutParams lp = new TableRow.LayoutParams(CommonUtil.getConvertToDeviceDP(getResources(), 22), CommonUtil.getConvertToDeviceDP(getResources(), 22));
         lp.setMargins(5, 5, 5, 5);
 
@@ -263,10 +338,12 @@ public class SavedLottoListActivity extends AppCompatActivity {
         button.setLayoutParams(lp);
         button.setTextSize(11);
         button.setText(String.valueOf(lottoNum));
-        if(checkPrizeLottoNumber(this.resultLottoMap, lottoNum) == 1) { // 번호가 맞을경우
+
+        int rightGubun = isRightLottoNumber(this.resultLottoMap, lottoNum, lotto);
+        if(rightGubun == 1) { // 번호가 맞을경우
             button.setTextColor(Color.WHITE);
             button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
-        } else if(checkPrizeLottoNumber(this.resultLottoMap, lottoNum) == 2) { // 보너스일경우
+        } else if(rightGubun == 2) { // 보너스일경우
             button.setTextColor(Color.BLACK);
             button.setBackgroundDrawable(ContextCompat.getDrawable(this, this.lottoService.getLottoColor(lottoNum)));
         } else {
@@ -276,8 +353,8 @@ public class SavedLottoListActivity extends AppCompatActivity {
         return button;
     }
 
-    // 당첨번호인지 확인
-    public int checkPrizeLottoNumber(Map<String, Object> resultLottoMap, int lottoNumber) {
+    // 당첨번호 확인
+    public int isRightLottoNumber(Map<String, Object> resultLottoMap, int lottoNumber, Lotto lotto) {
         int result = 0;
         if(resultLottoMap == null) {
             return result;
@@ -298,7 +375,7 @@ public class SavedLottoListActivity extends AppCompatActivity {
 
         if(Arrays.asList(drwtNo1, drwtNo2, drwtNo3, drwtNo4, drwtNo5, drwtNo6).contains(lottoNumber)) {
             result = 1;
-        } else if(bnusNo == lottoNumber) {
+        } else if(bnusNo == lottoNumber && getPrizeRanking(resultLottoMap, lotto) == 2) {
             result = 2;
         }
 
