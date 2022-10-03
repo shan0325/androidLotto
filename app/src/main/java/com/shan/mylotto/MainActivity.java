@@ -24,6 +24,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         // 이번주 회차 정보 넣기
         this.thisWeekRound = lottoService.getLottoRoundByDhlottery(getApplicationContext());
         this.round.setText(thisWeekRound);
+        this.round.clearFocus();
     }
 
     public void init() {
@@ -197,9 +200,6 @@ public class MainActivity extends AppCompatActivity {
                 lottoList = lottoService.makeLotto(Integer.parseInt(makeNumber));
                 displayLottos(lottoList);
 
-                // 회차 정보 넣기
-                round.setText(thisWeekRound);
-
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                         saveBtn.setText("저장");
                         isSaved = false;
 
-                        showToast(getApplicationContext(),"생성을 완료하였습니다.");
+                        //showToast(getApplicationContext(),"생성을 완료하였습니다.");
                     }
                 }, 1100);
             }
@@ -254,6 +254,22 @@ public class MainActivity extends AppCompatActivity {
                     showToast(getApplicationContext(),"저장을 실패하였습니다.");
                     saveBtn.setText("저장 실패");
                 }
+            }
+        });
+
+        // 회차 정보 변경 시
+        this.round.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                isSaved = false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
             }
         });
 

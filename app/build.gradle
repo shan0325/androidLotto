@@ -7,8 +7,8 @@ android {
         applicationId "com.shan.mylotto"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 8
-        versionName "1.6"
+        versionCode 9
+        versionName "1.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
